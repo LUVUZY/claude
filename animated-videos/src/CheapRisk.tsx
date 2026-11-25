@@ -482,7 +482,7 @@ const CUES: Cue[] = [
   {t: 51.0, src: SFX('impact-wood-heavy-001'), vol: 0.6},
 ];
 
-export const CheapRisk: React.FC<{music?: 'song' | 'none'; captions?: boolean}> = ({music = 'song', captions = true}) => {
+export const CheapRisk: React.FC<{music?: 'song' | 'none'; captions?: boolean}> = ({music = 'song', captions = false}) => {
   const frame = useCurrentFrame();
   const s = frame / FPS;
   const bp = beatPulse(s);

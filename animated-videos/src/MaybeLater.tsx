@@ -843,7 +843,7 @@ const CUES: Cue[] = [
 ];
 
 // ---------- composition ----------
-export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide' | 'song'; captions?: boolean}> = ({music = 'none', captions = true}) => {
+export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide' | 'song'; captions?: boolean}> = ({music = 'none', captions = false}) => {
   const frame = useCurrentFrame();
   const bp = beatPulse(frame / FPS);
   const fadeOut = interpolate(frame, [MAYBE_LATER_FRAMES - 20, MAYBE_LATER_FRAMES], [1, 0], clamp);
