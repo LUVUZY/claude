@@ -10,5 +10,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="BuyersMind3D" component={BuyersMind3D} durationInFrames={480} fps={30} width={1080} height={1920} />
     <Composition id="TwoSellers" component={TwoSellers} durationInFrames={TWO_SELLERS_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="MaybeLater" component={MaybeLater} durationInFrames={MAYBE_LATER_FRAMES} fps={30} width={1080} height={1920} />
+    <Composition id="MaybeLaterDemoBeat" component={MaybeLater} defaultProps={{music: 'demo' as const}} durationInFrames={MAYBE_LATER_FRAMES} fps={30} width={1080} height={1920} />
+    <Composition id="MaybeLaterBeatGuide" component={MaybeLater} defaultProps={{music: 'guide' as const}} durationInFrames={MAYBE_LATER_FRAMES} fps={30} width={1080} height={1920} />
   </>
 );

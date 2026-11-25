@@ -15,6 +15,13 @@ const DIM = '#5E5E63';
 const FONT = 'Inter, sans-serif';
 const glow = (a = 0.45, r = 24) => `drop-shadow(0 0 ${r}px rgba(255,255,255,${a}))`;
 const FLOOR = 1500;
+// music structure (copied from cryothum): hook with no beat, drop when the hook line ends,
+// steady beat under the argument, beat strips out for the conclusion.
+export const BPM = 99;
+export const DROP = 4.08;
+export const STRIP = 53.16;
+const BEAT = 60 / BPM;
+const TEXT = 1.3; // global text size boost (v1 text was too small on a phone)
 
 // ---------- time helpers (absolute seconds, read from the global frame) ----------
 const useSec = () => useCurrentFrame() / FPS;
@@ -66,8 +73,36 @@ const Backdrop: React.FC = () => (
   <AbsoluteFill style={{backgroundColor: '#09090A'}}>
     <AbsoluteFill style={{backgroundImage: 'radial-gradient(rgba(255,255,255,0.10) 1.6px, transparent 1.8px)', backgroundSize: '46px 46px'}} />
     <AbsoluteFill style={{background: 'radial-gradient(ellipse 70% 55% at 50% 45%, rgba(255,255,255,0.05), transparent 70%)'}} />
+    <Dust />
+    <AbsoluteFill style={{background: 'radial-gradient(ellipse 85% 70% at 50% 50%, transparent 55%, rgba(0,0,0,0.65) 100%)'}} />
   </AbsoluteFill>
 );
+
+const rand = (i: number) => {
+  const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+};
+const Dust: React.FC = () => {
+  const s = useSec();
+  return (
+    <>
+      {Array.from({length: 46}, (_, i) => {
+        const x = rand(i) * 1080 + Math.sin(s * 0.3 + i) * 18;
+        const y = (((rand(i + 50) * 1920 - s * (14 + rand(i + 99) * 22)) % 1920) + 1920) % 1920;
+        const r = 1.5 + rand(i + 7) * 2.5;
+        const a = 0.08 + 0.18 * (0.5 + 0.5 * Math.sin(s * (0.8 + rand(i + 3)) + i));
+        return <div key={i} style={{position: 'absolute', left: x, top: y, width: r * 2, height: r * 2, borderRadius: r, background: `rgba(255,255,255,${a})`, filter: 'blur(0.6px)'}} />;
+      })}
+    </>
+  );
+};
+
+// a short punch on every beat between the drop and the strip-down
+const beatPulse = (sec: number) => {
+  if (sec < DROP || sec > STRIP) return 0;
+  const since = (sec - DROP) % BEAT;
+  return Math.exp(-since / 0.09);
+};
 
 const Floor: React.FC<{y?: number}> = ({y = FLOOR}) => (
   <div
@@ -84,18 +119,32 @@ const Floor: React.FC<{y?: number}> = ({y = FLOOR}) => (
 );
 
 const Spotlight: React.FC<{x: number; width?: number; strength?: number; to?: number}> = ({x, width = 520, strength = 1, to = FLOOR}) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: x - width / 2,
-      top: 0,
-      width,
-      height: to + 60,
-      background: `linear-gradient(180deg, rgba(255,255,255,${0.02 * strength}) 0%, rgba(255,255,255,${0.11 * strength}) 100%)`,
-      clipPath: 'polygon(38% 0, 62% 0, 100% 100%, 0 100%)',
-      filter: 'blur(6px)',
-    }}
-  />
+  <>
+    {/* faint beam */}
+    <div
+      style={{
+        position: 'absolute',
+        left: x - width / 2,
+        top: 0,
+        width,
+        height: to + 40,
+        background: `linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,${0.045 * strength}) 100%)`,
+        clipPath: 'polygon(44% 0, 56% 0, 100% 100%, 0 100%)',
+        filter: 'blur(28px)',
+      }}
+    />
+    {/* soft pool of light on the floor */}
+    <div
+      style={{
+        position: 'absolute',
+        left: x - width * 0.75,
+        top: to - 160,
+        width: width * 1.5,
+        height: 320,
+        background: `radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,255,255,${0.10 * strength}) 0%, rgba(255,255,255,0) 70%)`,
+      }}
+    />
+  </>
 );
 
 type Arms = 'none' | 'up' | 'point';
@@ -143,7 +192,7 @@ const Label: React.FC<{x: number; y: number; text: string; size?: number; at?: n
         textAlign: align,
         fontFamily: FONT,
         fontWeight: weight,
-        fontSize: size,
+        fontSize: size * TEXT,
         letterSpacing: spacing,
         color,
         opacity: Math.min(1, p * 1.5),
@@ -201,37 +250,71 @@ const Check: React.FC<{size?: number}> = ({size = 44}) => (
 
 const money = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
 
-// ---------- scene 1: hook — the lost-sales chart ----------
+// ---------- scene 1: hook — carts leaving, a lost-sales counter climbing ----------
+const Cart: React.FC<{size?: number; color?: string}> = ({size = 64, color = W}) => (
+  <svg width={size} height={size * 0.8} viewBox="0 0 80 64">
+    <path d="M4 6 H16 L24 42 H66 L74 16 H20" fill="none" stroke={color} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx={30} cy={54} r={6} fill={color} />
+    <circle cx={60} cy={54} r={6} fill={color} />
+  </svg>
+);
+
 const HookChart: React.FC = () => {
   const s = useSec();
-  const small = ramp(s, 1.5, 2.1, 0, 150);
-  const big = ramp(s, 2.95, 3.6, 0, 720, Easing.out(Easing.back(1.4)));
-  const shake = s > 3.3 && s < 3.7 ? Math.sin(s * 90) * 8 : 0;
+  const lost = ramp(s, 0, 3.9, 0, 48312, Easing.in(Easing.quad)) + (Math.floor(s * 30) % 3) * 9;
+  const nowhere = s >= 2.8 ? pop(s, 2.8, 10) : 0;
+  const carts = Array.from({length: 26}, (_, i) => 0.05 + i * 0.14);
   return (
-    <AbsoluteFill style={{translate: `${shake}px 0`}}>
-      <Spotlight x={270} />
-      <Blob x={270} arms={s > 3.0 ? 'up' : 'none'} squash={s > 2.95 && s < 3.2 ? 1 : 0} />
-      {/* chart axes */}
-      <div style={{position: 'absolute', left: 470, top: 560, width: 4, height: 900, background: W, filter: glow(0.3, 12)}} />
-      <div style={{position: 'absolute', left: 470, top: 1456, width: 560, height: 4, background: W, filter: glow(0.3, 12)}} />
-      <Label x={470} y={500} text="LOST SALES" align="left" size={30} at={0.1} />
-      {/* bar 1: competitors */}
-      <div style={{position: 'absolute', left: 530, top: 1456 - small, width: 170, height: small, border: `4px solid ${W}`, borderBottom: 'none', borderRadius: '10px 10px 0 0'}} />
-      <Label x={615} y={1480} text="COMPETITORS" size={22} spacing={3} at={1.5} />
-      {/* bar 2: nowhere */}
+    <AbsoluteFill>
+      <Spotlight x={330} width={760} strength={1.4} />
+      {/* lost sales counter, big like cryothum's NET WORTH */}
+      <Label x={540} y={250} text="LOST SALES" size={30} spacing={8} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: 300, textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 150, color: W, letterSpacing: 2, filter: glow(0.5, 30)}}>
+        {money(lost)}
+      </div>
+      {/* desk + laptop */}
+      <svg style={{position: 'absolute', left: 0, top: 0, overflow: 'visible', filter: glow(0.3, 16)}} width={1080} height={1920}>
+        <rect x={250} y={1130} width={300} height={190} rx={14} fill="rgba(9,9,10,0.95)" stroke={W} strokeWidth={5} />
+        <rect x={278} y={1158} width={244} height={134} rx={6} fill="none" stroke={W} strokeWidth={3} opacity={0.6} />
+        <line x1={230} y1={1330} x2={570} y2={1330} stroke={W} strokeWidth={6} strokeLinecap="round" />
+        <line x1={150} y1={1330} x2={640} y2={1330} stroke={W} strokeWidth={6} />
+        <line x1={170} y1={1330} x2={170} y2={FLOOR} stroke={W} strokeWidth={5} />
+        <line x1={620} y1={1330} x2={620} y2={FLOOR} stroke={W} strokeWidth={5} />
+      </svg>
+      <Blob x={120} scale={1.25} arms="point" />
+      {/* carts leave the screen: one in five goes to a competitor, the rest go nowhere */}
+      {carts.map((t0, i) => {
+        if (s < t0) return null;
+        const p = ramp(s, t0, t0 + 1.25, 0, 1, Easing.inOut(Easing.quad));
+        const toComp = i % 5 === 2;
+        const tx = toComp ? 880 : 760 + rand(i) * 260;
+        const ty = toComp ? 1400 : 620 + rand(i + 9) * 260;
+        const x = interpolate(p, [0, 1], [400, tx]);
+        const y = interpolate(p, [0, 1], [1200, ty]) - Math.sin(p * Math.PI) * (toComp ? 120 : 320);
+        const fade = toComp ? 1 - ramp(s, t0 + 1.1, t0 + 1.3) : 1 - p * p;
+        return (
+          <div key={i} style={{position: 'absolute', left: x - 50, top: y - 40, opacity: fade, scale: `${toComp ? 1 : 1 - p * 0.6}`, rotate: `${(rand(i + 3) - 0.5) * 60 * p}deg`, filter: glow(0.4, 12)}}>
+            <Cart size={100} />
+          </div>
+        );
+      })}
+      {/* where they went */}
+      <div style={{position: 'absolute', left: 800, top: 1340, width: 160, height: 120, border: `4px solid ${W}`, borderRadius: 16, opacity: s > 1.6 ? pop(s, 1.6) : 0, filter: glow(0.3, 14)}} />
+      <Label x={880} y={1480} text="COMPETITORS" size={20} spacing={3} at={1.9} />
       <div
         style={{
           position: 'absolute',
-          left: 790,
-          top: 1456 - big,
-          width: 170,
-          height: big,
-          background: s > 2.95 ? 'rgba(237,237,237,0.92)' : 'transparent',
-          borderRadius: '10px 10px 0 0',
-          filter: glow(0.55, 40),
+          left: 700,
+          top: 560,
+          width: 380,
+          height: 380,
+          borderRadius: 190,
+          background: 'radial-gradient(circle, rgba(0,0,0,1) 30%, rgba(0,0,0,0.6) 55%, rgba(255,255,255,0.10) 68%, transparent 72%)',
+          opacity: nowhere,
+          scale: `${0.6 + 0.4 * nowhere}`,
         }}
       />
-      <Label x={875} y={1480} text="NOWHERE" size={22} spacing={3} at={2.95} />
+      <Label x={890} y={960} text="NOWHERE" size={44} spacing={6} at={2.8} />
     </AbsoluteFill>
   );
 };
@@ -753,13 +836,15 @@ const CUES: Cue[] = [
 ];
 
 // ---------- composition ----------
-export const MaybeLater: React.FC = () => {
+export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide'}> = ({music = 'none'}) => {
   const frame = useCurrentFrame();
+  const bp = beatPulse(frame / FPS);
   const fadeOut = interpolate(frame, [MAYBE_LATER_FRAMES - 20, MAYBE_LATER_FRAMES], [1, 0], clamp);
   return (
     <AbsoluteFill style={{backgroundColor: '#09090A'}}>
       <Audio src={staticFile('vo/voiceover.wav')} />
-      <Audio src={staticFile('sfx/pad.wav')} volume={0.16} />
+      {music === 'demo' && <Audio src={staticFile('music/demo-beat.wav')} volume={0.55} />}
+      {music === 'guide' && <Audio src={staticFile('music/beat-guide.wav')} volume={0.6} />}
       {CUES.map((c, i) => (
         <Sequence key={i} from={fr(c.t)} layout="none">
           <Audio src={staticFile(c.src)} volume={c.vol ?? 1} />
@@ -767,6 +852,7 @@ export const MaybeLater: React.FC = () => {
       ))}
       <AbsoluteFill style={{opacity: fadeOut}}>
         <Backdrop />
+        <AbsoluteFill style={{scale: `${1 + bp * 0.012}`, filter: `brightness(${1 + bp * 0.08})`}}>
         <Floor />
         <Shot start={0} end={4.08} first zoom={[1, 1.05]}>
           <HookChart />
@@ -792,6 +878,7 @@ export const MaybeLater: React.FC = () => {
         <Shot start={53.16} end={61} last zoom={[1, 1.05]}>
           <Remember />
         </Shot>
+        </AbsoluteFill>
       </AbsoluteFill>
     </AbsoluteFill>
   );
