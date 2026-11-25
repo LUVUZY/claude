@@ -4,3 +4,5 @@ out/*.jpg
 whisper.cpp
 public/music/song-bed.wav
 public/music/song-bed-2.wav
+out/*with-song*.mp4
+out/cheap-risk.mp4
