@@ -77,7 +77,7 @@ export const Captions: React.FC<{chunks: Chunk[]; top?: number}> = ({chunks, top
         const active = s >= wd.t && s < nextT;
         const said = s >= wd.t;
         return (
-          <React.Fragment key={wd.t}>
+          <React.Fragment key={`${chunk.start}-${i}`}>
           <span
             style={{
               display: 'inline-block',
