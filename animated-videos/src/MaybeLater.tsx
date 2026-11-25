@@ -757,10 +757,10 @@ const SafeScene: React.FC = () => {
         const x = interpolate(ramp(s, t, t + 0.9, 0, 1, Easing.out(Easing.cubic)), [0, 1], [1200, 760 + i * 0]);
         return <Blob key={t} x={x + i * 70 + 80} y={FLOOR + 60} scale={0.5} />;
       })}
-      <Label x={270} y={1620} text="REVENUE" size={22} spacing={4} color={DIM} />
-      <Label x={270} y={1655} text="$0" size={64} color={DIM} />
-      <Label x={810} y={1620} text="REVENUE" size={22} spacing={4} />
-      <Label x={810} y={1655} text={money(s > 50.2 ? rev : 0)} size={64} />
+      <Label x={270} y={1512} text="REVENUE" size={22} spacing={4} color={DIM} />
+      <Label x={270} y={1544} text="$0" size={56} color={DIM} />
+      <Label x={810} y={1512} text="REVENUE" size={22} spacing={4} />
+      <Label x={810} y={1544} text={money(s > 50.2 ? rev : 0)} size={56} />
       <Label x={810} y={760} text="YES" size={110} spacing={6} at={52.4} />
       <Label x={540} y={420} text="FEELS SAFE" size={52} spacing={4} at={51.5} />
     </AbsoluteFill>

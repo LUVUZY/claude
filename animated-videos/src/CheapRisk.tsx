@@ -395,8 +395,8 @@ const Proof: React.FC = () => {
         </div>
       )}
       {[0, 1, 2, 3].map((i) => (s >= 39.0 + i * 0.25 ? <Blob key={i} x={interpolate(ramp(s, 39 + i * 0.25, 39.9 + i * 0.25, 0, 1, Easing.out(Easing.cubic)), [0, 1], [1250, 290 + i * 170])} y={FLOOR} scale={0.6} /> : null))}
-      <Label x={540} y={1580} text="REVENUE" size={22} spacing={5} at={40.6} />
-      <Label x={540} y={1620} text={money(s >= 40.6 ? rev : 0)} size={64} at={40.6} />
+      <Label x={540} y={1512} text="REVENUE" size={22} spacing={5} at={40.6} />
+      <Label x={540} y={1544} text={money(s >= 40.6 ? rev : 0)} size={56} at={40.6} />
     </AbsoluteFill>
   );
 };

@@ -42,7 +42,7 @@ export const toSrt = (chunks: Chunk[]) => {
   return chunks.map((c, i) => `${i + 1}\n${ts(c.start)} --> ${ts(c.end)}\n${c.words.map((w) => w.w).join(' ')}\n`).join('\n');
 };
 
-export const Captions: React.FC<{chunks: Chunk[]; top?: number}> = ({chunks, top = 128}) => {
+export const Captions: React.FC<{chunks: Chunk[]; top?: number}> = ({chunks, top = 1640}) => {
   const frame = useCurrentFrame();
   const s = frame / FPS;
   const chunk = chunks.find((c) => s >= c.start && s < c.end);
@@ -50,13 +50,18 @@ export const Captions: React.FC<{chunks: Chunk[]; top?: number}> = ({chunks, top
   const p = spring({frame: frame - Math.round(chunk.start * FPS), fps: FPS, config: {damping: 14, mass: 0.5}});
   return (
     <>
-    <div style={{position: 'absolute', left: 0, right: 0, top: 0, height: top + 150, background: 'linear-gradient(180deg, rgba(5,5,6,0.85) 0%, rgba(5,5,6,0.6) 60%, transparent 100%)'}} />
     <div
       style={{
         position: 'absolute',
-        left: 40,
-        right: 40,
+        left: '50%',
         top,
+        translate: '-50% 0',
+        maxWidth: 1000,
+        width: 'max-content',
+        padding: '14px 26px 16px',
+        borderRadius: 22,
+        background: 'rgba(5,5,6,0.78)',
+        boxShadow: '0 0 30px rgba(0,0,0,0.6)',
         textAlign: 'center',
         fontFamily: 'Inter, sans-serif',
         fontWeight: 900,
