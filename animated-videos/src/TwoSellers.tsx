@@ -38,7 +38,9 @@ const DESK_TOP = 1190;
 const FEATURE_DROPS = [165, 187, 209, 231, 253];
 const BUYER_STREAM = [505, 527, 549, 571, 593, 615];
 const COIN_AT = 62; // frames after a stream buyer enters, when they reach B
-const B_FINAL_SALES = 48;
+const B_REVENUE_W12 = 148920; // B's revenue when week 12 ends
+const B_REVENUE_END = 163480; // it keeps climbing through the closing lines
+const money = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
 
 // ---------------- sound cues ----------------
 type Cue = {f: number; src: string; vol?: number};
@@ -46,7 +48,7 @@ const buildCues = (): Cue[] => {
   const c: Cue[] = [{f: 0, src: 'hum.wav', vol: 0.9}];
   for (const cap of captions) {
     if (cap.from > 0) c.push({f: cap.from - 4, src: 'whoosh.wav', vol: 0.5});
-    for (let k = 0; k < cap.line.length; k += 2) c.push({f: cap.from + 3 + k, src: 'type.wav', vol: 0.5});
+    for (let k = 0; k < cap.line.length; k += 2) c.push({f: cap.from + 3 + k, src: 'type.wav', vol: 1});
   }
   // week 2: two buyers walk past
   for (let f = T.week2 + 4; f < T.week4 - 4; f += 9) c.push({f, src: 'step.wav', vol: 0.5});
@@ -298,12 +300,12 @@ const Buyer: React.FC<{f: number[]; x: number[]; shade?: string; still?: 1 | -1}
   return <Figure x={pos} y={FLOOR - 134} pose={pose} facing={facing} scale={1.05} color={shade} />;
 };
 
-const Counter: React.FC<{x: number; value: number; hot: boolean; bump: number}> = ({x, value, hot, bump}) => (
+const Counter: React.FC<{x: number; value: string; hot: boolean; bump: number}> = ({x, value, hot, bump}) => (
   <div style={{position: 'absolute', left: x - 200, width: 400, top: 1395, textAlign: 'center', fontFamily: MONO}}>
-    <div style={{fontSize: 26, letterSpacing: 6, color: '#6E6F7A', fontWeight: 700}}>SALES</div>
+    <div style={{fontSize: 26, letterSpacing: 6, color: '#6E6F7A', fontWeight: 700}}>REVENUE</div>
     <div
       style={{
-        fontSize: 92,
+        fontSize: 62,
         fontWeight: 700,
         color: hot ? '#F3C25B' : '#9A9BA6',
         transform: `scale(${1 + bump * 0.18})`,
@@ -353,10 +355,14 @@ export const TwoSellers: React.FC = () => {
   // sales counters
   const coinsLanded = BUYER_STREAM.filter((s) => frame >= s + COIN_AT + 18).length;
   const lastCoin = Math.max(...BUYER_STREAM.map((s) => (frame >= s + COIN_AT + 18 ? s + COIN_AT + 18 : -999)));
-  const bSales =
-    frame < BUYER_STREAM[0] + COIN_AT + 18
+  const firstCoin = BUYER_STREAM[0] + COIN_AT + 18;
+  const bRevenue =
+    frame < firstCoin
       ? 0
-      : Math.round(interpolate(frame, [BUYER_STREAM[0] + COIN_AT + 18, BUYER_STREAM[5] + COIN_AT + 30], [1, B_FINAL_SALES], clamp));
+      : interpolate(frame, [firstCoin, BUYER_STREAM[5] + COIN_AT + 30, T.end], [49, B_REVENUE_W12, B_REVENUE_END], {
+          ...clamp,
+          easing: Easing.inOut(Easing.quad),
+        }) + (frame % 3) * 7; // jitter so the digits keep ticking like a live counter
   const bump = coinsLanded > 0 ? interpolate(frame - lastCoin, [0, 8], [1, 0], clamp) : 0;
 
   // seller poses
@@ -400,8 +406,8 @@ export const TwoSellers: React.FC = () => {
         <Desk x={B} />
         <Product x={B} fixed={fixed} glow={warm} />
 
-        <Counter x={A} value={0} hot={false} bump={0} />
-        <Counter x={B} value={bSales} hot={bSales > 0} bump={bump} />
+        <Counter x={A} value="$0" hot={false} bump={0} />
+        <Counter x={B} value={money(bRevenue)} hot={bRevenue > 0} bump={bump} />
 
         {/* week 2: two buyers drift past both sellers */}
         <Buyer f={[T.week2, 86, 100, 116, 130, T.week4]} x={[-80, A + 120, A + 120, B + 120, B + 120, 1180]} still={-1} />
