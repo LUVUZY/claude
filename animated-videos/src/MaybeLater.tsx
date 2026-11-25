@@ -2,6 +2,10 @@ import React from 'react';
 import {AbsoluteFill, Audio, Easing, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {CameraMotionBlur} from '@remotion/motion-blur';
 import songGrid from './song-grid.json';
+import voWords from './vo-words.json';
+import {Captions, buildChunks} from './Captions';
+
+const CAPTIONS = buildChunks(voWords, {'23.61': 'more'});
 
 // "Maybe Later": a buyer-psychology reel in the cryothum style
 // (black and white, blob figures, thin glowing outlines, spotlights, dotted grid, voiceover-led).
@@ -839,7 +843,7 @@ const CUES: Cue[] = [
 ];
 
 // ---------- composition ----------
-export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide' | 'song'}> = ({music = 'none'}) => {
+export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide' | 'song'; captions?: boolean}> = ({music = 'none', captions = true}) => {
   const frame = useCurrentFrame();
   const bp = beatPulse(frame / FPS);
   const fadeOut = interpolate(frame, [MAYBE_LATER_FRAMES - 20, MAYBE_LATER_FRAMES], [1, 0], clamp);
@@ -883,6 +887,7 @@ export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide' | 'song'}> 
           <Remember />
         </Shot>
         </AbsoluteFill>
+        {captions && <Captions chunks={CAPTIONS} />}
       </AbsoluteFill>
     </AbsoluteFill>
   );

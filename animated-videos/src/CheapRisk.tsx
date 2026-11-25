@@ -23,6 +23,10 @@ import {
   useSec,
 } from './MaybeLater';
 import grid from './song-grid-2.json';
+import voWords from './vo2-words.json';
+import {Captions, buildChunks} from './Captions';
+
+const CAPTIONS = buildChunks(voWords, {}, 53);
 
 // "Cheap Feels Risky": why lowering your price can lose sales.
 // Voice: Inworld "Jane". Every phrase was re-placed so speech starts on the beat of
@@ -478,7 +482,7 @@ const CUES: Cue[] = [
   {t: 51.0, src: SFX('impact-wood-heavy-001'), vol: 0.6},
 ];
 
-export const CheapRisk: React.FC<{music?: 'song' | 'none'}> = ({music = 'song'}) => {
+export const CheapRisk: React.FC<{music?: 'song' | 'none'; captions?: boolean}> = ({music = 'song', captions = true}) => {
   const frame = useCurrentFrame();
   const s = frame / FPS;
   const bp = beatPulse(s);
@@ -531,6 +535,7 @@ export const CheapRisk: React.FC<{music?: 'song' | 'none'}> = ({music = 'song'})
             <Remember />
           </Shot>
         </AbsoluteFill>
+        {captions && <Captions chunks={CAPTIONS} />}
       </AbsoluteFill>
     </AbsoluteFill>
   );
