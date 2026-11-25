@@ -10,6 +10,11 @@ LOOP_BEATS = 24     # full post-drop section used as the loop (6 bars)
 DROP = 4.08         # our video: hook ends, beat drops
 STRIP_BEATS = 55    # beats after the drop until the strip-down (lands at ~52.99s, by "If you remember one thing")
 END = 61.0
+VO = 'public/vo/voiceover.wav'
+GRID_OUT = 'src/song-grid.json'
+# optional overrides: build_song_bed.py <clip> <out> <drop> <strip_beats> <end> <vo.wav> <grid.json>
+if len(sys.argv) > 3:
+    DROP, STRIP_BEATS, END, VO, GRID_OUT = float(sys.argv[3]), int(sys.argv[4]), float(sys.argv[5]), sys.argv[6], sys.argv[7]
 
 w = wave.open(sys.argv[1]); ch = w.getnchannels()
 x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float32).reshape(-1, ch) / 32768
@@ -41,7 +46,7 @@ place(strip_at, outro)
 fe = int(1.0 * SR); out[-fe:] *= np.linspace(1, 0, fe)[:, None]
 
 # 4) duck under the voiceover
-v = wave.open('public/vo/voiceover.wav'); vsr = v.getframerate(); vch = v.getnchannels()
+v = wave.open(VO); vsr = v.getframerate(); vch = v.getnchannels()
 vo = np.frombuffer(v.readframes(v.getnframes()), dtype=np.int16).astype(np.float32).reshape(-1, vch).mean(1) / 32768
 if vsr != SR: vo = np.interp(np.arange(int(len(vo) * SR / vsr)) * vsr / SR, np.arange(len(vo)), vo)
 win = int(0.05 * SR); env = np.sqrt(np.convolve(vo ** 2, np.ones(win) / win, 'same'))
@@ -55,5 +60,5 @@ out *= gain[:, None]
 out = out / (np.abs(out).max() + 1e-9) * 0.9
 with wave.open(sys.argv[2], 'wb') as o:
     o.setnchannels(ch); o.setsampwidth(2); o.setframerate(SR); o.writeframes((out * 32767).astype(np.int16).tobytes())
-json.dump({'beat': P, 'drop': DROP, 'strip': round(strip_at, 3)}, open('src/song-grid.json', 'w'))
+json.dump({'beat': P, 'drop': DROP, 'strip': round(strip_at, 3)}, open(GRID_OUT, 'w'))
 print('strip at', round(strip_at, 3))

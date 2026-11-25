@@ -8,14 +8,14 @@ import songGrid from './song-grid.json';
 // All timings are in seconds of the voiceover (public/vo/voiceover.wav, voice "Jane"), timed with Whisper.
 
 export const MAYBE_LATER_FRAMES = 1830; // 61s at 30fps
-const FPS = 30;
-const fr = (sec: number) => Math.round(sec * FPS);
-const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
-const W = '#EDEDED';
-const DIM = '#5E5E63';
-const FONT = 'Inter, sans-serif';
-const glow = (a = 0.45, r = 24) => `drop-shadow(0 0 ${r}px rgba(255,255,255,${a}))`;
-const FLOOR = 1500;
+export const FPS = 30;
+export const fr = (sec: number) => Math.round(sec * FPS);
+export const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
+export const W = '#EDEDED';
+export const DIM = '#5E5E63';
+export const FONT = 'Inter, sans-serif';
+export const glow = (a = 0.45, r = 24) => `drop-shadow(0 0 ${r}px rgba(255,255,255,${a}))`;
+export const FLOOR = 1500;
 // music structure (copied from cryothum): hook with no beat, drop when the hook line ends,
 // steady beat under the argument, beat strips out for the conclusion.
 // beat grid of "meaningful love - instrumental" (Silo, Steven Cranberry), measured from the song
@@ -25,14 +25,14 @@ const BEAT = songGrid.beat; // 0.889s = 67.5 BPM, hi-hats in double time
 const TEXT = 1.3; // global text size boost (v1 text was too small on a phone)
 
 // ---------- time helpers (absolute seconds, read from the global frame) ----------
-const useSec = () => useCurrentFrame() / FPS;
-const pop = (sec: number, at: number, damping = 12) => spring({frame: fr(sec - at), fps: FPS, config: {damping, mass: 0.6}});
-const ramp = (sec: number, a: number, b: number, from = 0, to = 1, ease = Easing.inOut(Easing.cubic)) =>
+export const useSec = () => useCurrentFrame() / FPS;
+export const pop = (sec: number, at: number, damping = 12) => spring({frame: fr(sec - at), fps: FPS, config: {damping, mass: 0.6}});
+export const ramp = (sec: number, a: number, b: number, from = 0, to = 1, ease = Easing.inOut(Easing.cubic)) =>
   interpolate(sec, [a, b], [from, to], {...clamp, easing: ease});
 
 // ---------- scene shots with whip transitions + real motion blur during the whip ----------
 const WHIP = 0.28; // seconds each side of a cut
-const ShotInner: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]}> = ({start, end, children, zoom}) => {
+export const ShotInner: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]}> = ({start, end, children, zoom}) => {
   const s = useSec();
   const enter = ramp(s, start - WHIP, start + WHIP, 1, 0, Easing.out(Easing.cubic));
   const exit = ramp(s, end - WHIP, end + WHIP, 0, 1, Easing.in(Easing.cubic));
@@ -41,18 +41,19 @@ const ShotInner: React.FC<{start: number; end: number; children: React.ReactNode
   return <AbsoluteFill style={{translate: `${x}px 0`, scale: z}}>{children}</AbsoluteFill>;
 };
 
-const Shot: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]; first?: boolean; last?: boolean}> = ({
+export const Shot: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]; first?: boolean; last?: boolean; total?: number}> = ({
   start,
   end,
   children,
   zoom,
   first,
   last,
+  total = MAYBE_LATER_FRAMES,
 }) => {
   const frame = useCurrentFrame();
   const s = frame / FPS;
   const from = first ? 0 : fr(start - WHIP);
-  const to = last ? MAYBE_LATER_FRAMES : fr(end + WHIP);
+  const to = last ? total : fr(end + WHIP);
   if (frame < from || frame >= to) return null;
   const inner = (
     <ShotInner start={first ? -10 : start} end={last ? 999 : end} zoom={zoom}>
@@ -70,7 +71,7 @@ const Shot: React.FC<{start: number; end: number; children: React.ReactNode; zoo
 };
 
 // ---------- building blocks ----------
-const Backdrop: React.FC = () => (
+export const Backdrop: React.FC = () => (
   <AbsoluteFill style={{backgroundColor: '#09090A'}}>
     <AbsoluteFill style={{backgroundImage: 'radial-gradient(rgba(255,255,255,0.10) 1.6px, transparent 1.8px)', backgroundSize: '46px 46px'}} />
     <AbsoluteFill style={{background: 'radial-gradient(ellipse 70% 55% at 50% 45%, rgba(255,255,255,0.05), transparent 70%)'}} />
@@ -79,11 +80,11 @@ const Backdrop: React.FC = () => (
   </AbsoluteFill>
 );
 
-const rand = (i: number) => {
+export const rand = (i: number) => {
   const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
   return x - Math.floor(x);
 };
-const Dust: React.FC = () => {
+export const Dust: React.FC = () => {
   const s = useSec();
   return (
     <>
@@ -106,7 +107,7 @@ const beatPulse = (sec: number) => {
   return Math.max(Math.exp(-since / 0.1), 0.35 * Math.exp(-half / 0.07));
 };
 
-const Floor: React.FC<{y?: number}> = ({y = FLOOR}) => (
+export const Floor: React.FC<{y?: number}> = ({y = FLOOR}) => (
   <div
     style={{
       position: 'absolute',
@@ -120,7 +121,7 @@ const Floor: React.FC<{y?: number}> = ({y = FLOOR}) => (
   />
 );
 
-const Spotlight: React.FC<{x: number; width?: number; strength?: number; to?: number}> = ({x, width = 520, strength = 1, to = FLOOR}) => (
+export const Spotlight: React.FC<{x: number; width?: number; strength?: number; to?: number}> = ({x, width = 520, strength = 1, to = FLOOR}) => (
   <>
     {/* faint beam */}
     <div
@@ -150,7 +151,7 @@ const Spotlight: React.FC<{x: number; width?: number; strength?: number; to?: nu
 );
 
 type Arms = 'none' | 'up' | 'point';
-const Blob: React.FC<{x: number; y?: number; scale?: number; arms?: Arms; dim?: number; squash?: number}> = ({x, y = FLOOR, scale = 1, arms = 'none', dim = 0, squash = 0}) => {
+export const Blob: React.FC<{x: number; y?: number; scale?: number; arms?: Arms; dim?: number; squash?: number}> = ({x, y = FLOOR, scale = 1, arms = 'none', dim = 0, squash = 0}) => {
   const c = dim > 0 ? `rgb(${237 - dim * 150},${237 - dim * 150},${237 - dim * 145})` : W;
   return (
     <div style={{position: 'absolute', left: x, top: y, width: 0, height: 0, scale: `${scale}`}}>
@@ -170,7 +171,7 @@ const Blob: React.FC<{x: number; y?: number; scale?: number; arms?: Arms; dim?: 
   );
 };
 
-const Label: React.FC<{x: number; y: number; text: string; size?: number; at?: number; color?: string; spacing?: number; weight?: number; align?: 'center' | 'left'}> = ({
+export const Label: React.FC<{x: number; y: number; text: string; size?: number; at?: number; color?: string; spacing?: number; weight?: number; align?: 'center' | 'left'}> = ({
   x,
   y,
   text,
@@ -208,7 +209,7 @@ const Label: React.FC<{x: number; y: number; text: string; size?: number; at?: n
   );
 };
 
-const Outline: React.FC<{x: number; y: number; w: number; h: number; at?: number; r?: number; dim?: number; children?: React.ReactNode; fill?: string}> = ({
+export const Outline: React.FC<{x: number; y: number; w: number; h: number; at?: number; r?: number; dim?: number; children?: React.ReactNode; fill?: string}> = ({
   x,
   y,
   w,
@@ -243,17 +244,17 @@ const Outline: React.FC<{x: number; y: number; w: number; h: number; at?: number
   );
 };
 
-const Check: React.FC<{size?: number}> = ({size = 44}) => (
+export const Check: React.FC<{size?: number}> = ({size = 44}) => (
   <svg width={size} height={size} viewBox="0 0 44 44">
     <circle cx={22} cy={22} r={19} fill="none" stroke={W} strokeWidth={4} />
     <path d="M13 23 L19.5 29 L31 16" fill="none" stroke={W} strokeWidth={4.5} strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
-const money = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
+export const money = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
 
 // ---------- scene 1: hook — carts leaving, a lost-sales counter climbing ----------
-const Cart: React.FC<{size?: number; color?: string}> = ({size = 64, color = W}) => (
+export const Cart: React.FC<{size?: number; color?: string}> = ({size = 64, color = W}) => (
   <svg width={size} height={size * 0.8} viewBox="0 0 80 64">
     <path d="M4 6 H16 L24 42 H66 L74 16 H20" fill="none" stroke={color} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
     <circle cx={30} cy={54} r={6} fill={color} />
@@ -623,7 +624,7 @@ const MaybeLaterScene: React.FC = () => {
 };
 
 // ---------- two sellers ----------
-const Stall: React.FC<{x: number; dim?: number; lit?: number}> = ({x, dim = 0, lit = 0}) => {
+export const Stall: React.FC<{x: number; dim?: number; lit?: number}> = ({x, dim = 0, lit = 0}) => {
   const c = dim > 0.5 ? DIM : W;
   return (
     <svg style={{position: 'absolute', left: x - 200, top: FLOOR - 560, overflow: 'visible', filter: dim > 0.5 ? undefined : glow(0.25 + lit * 0.35, 18 + lit * 24)}} width={400} height={560}>
@@ -635,7 +636,7 @@ const Stall: React.FC<{x: number; dim?: number; lit?: number}> = ({x, dim = 0, l
   );
 };
 
-const ProductBox: React.FC<{x: number; y: number; dim?: number}> = ({x, y, dim = 0}) => (
+export const ProductBox: React.FC<{x: number; y: number; dim?: number}> = ({x, y, dim = 0}) => (
   <div style={{position: 'absolute', left: x - 60, top: y - 100, width: 120, height: 100, borderRadius: 12, border: `4px solid ${dim > 0.5 ? DIM : W}`, background: 'rgba(9,9,10,0.95)'}}>
     <div style={{height: 22, borderBottom: `4px solid ${dim > 0.5 ? DIM : W}`}} />
   </div>

@@ -3,3 +3,4 @@ out/*.jpg
 .DS_Store
 whisper.cpp
 public/music/song-bed.wav
+public/music/song-bed-2.wav
