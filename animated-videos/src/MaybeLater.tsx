@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Easing, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {CameraMotionBlur} from '@remotion/motion-blur';
+import songGrid from './song-grid.json';
 
 // "Maybe Later": a buyer-psychology reel in the cryothum style
 // (black and white, blob figures, thin glowing outlines, spotlights, dotted grid, voiceover-led).
@@ -17,10 +18,10 @@ const glow = (a = 0.45, r = 24) => `drop-shadow(0 0 ${r}px rgba(255,255,255,${a}
 const FLOOR = 1500;
 // music structure (copied from cryothum): hook with no beat, drop when the hook line ends,
 // steady beat under the argument, beat strips out for the conclusion.
-export const BPM = 99;
-export const DROP = 4.08;
-export const STRIP = 53.16;
-const BEAT = 60 / BPM;
+// beat grid of "meaningful love - instrumental" (Silo, Steven Cranberry), measured from the song
+export const DROP = songGrid.drop;
+export const STRIP = songGrid.strip;
+const BEAT = songGrid.beat; // 0.889s = 67.5 BPM, hi-hats in double time
 const TEXT = 1.3; // global text size boost (v1 text was too small on a phone)
 
 // ---------- time helpers (absolute seconds, read from the global frame) ----------
@@ -101,7 +102,8 @@ const Dust: React.FC = () => {
 const beatPulse = (sec: number) => {
   if (sec < DROP || sec > STRIP) return 0;
   const since = (sec - DROP) % BEAT;
-  return Math.exp(-since / 0.09);
+  const half = (sec - DROP) % (BEAT / 2);
+  return Math.max(Math.exp(-since / 0.1), 0.35 * Math.exp(-half / 0.07));
 };
 
 const Floor: React.FC<{y?: number}> = ({y = FLOOR}) => (
@@ -836,7 +838,7 @@ const CUES: Cue[] = [
 ];
 
 // ---------- composition ----------
-export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide'}> = ({music = 'none'}) => {
+export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide' | 'song'}> = ({music = 'none'}) => {
   const frame = useCurrentFrame();
   const bp = beatPulse(frame / FPS);
   const fadeOut = interpolate(frame, [MAYBE_LATER_FRAMES - 20, MAYBE_LATER_FRAMES], [1, 0], clamp);
@@ -844,6 +846,7 @@ export const MaybeLater: React.FC<{music?: 'none' | 'demo' | 'guide'}> = ({music
     <AbsoluteFill style={{backgroundColor: '#09090A'}}>
       <Audio src={staticFile('vo/voiceover.wav')} />
       {music === 'demo' && <Audio src={staticFile('music/demo-beat.wav')} volume={0.55} />}
+      {music === 'song' && <Audio src={staticFile('music/song-bed.wav')} volume={0.42} />}
       {music === 'guide' && <Audio src={staticFile('music/beat-guide.wav')} volume={0.6} />}
       {CUES.map((c, i) => (
         <Sequence key={i} from={fr(c.t)} layout="none">

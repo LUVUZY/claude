@@ -2,3 +2,4 @@ node_modules
 out/*.jpg
 .DS_Store
 whisper.cpp
+public/music/song-bed.wav
