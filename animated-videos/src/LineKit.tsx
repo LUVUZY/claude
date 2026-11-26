@@ -350,3 +350,20 @@ export const Dust: React.FC<{x0: number; x1: number; y0: number; y1: number; n?:
     </>
   );
 };
+
+/** Pricing card: small spaced title, big price, optional note. 'solid' = the one you want them to pick. */
+export const PriceCard: React.FC<{x: number; y: number; title: string; price: string; note?: string; look?: 'outline' | 'solid' | 'ghost'; w?: number; s: number; at: number; out?: number; priceAt?: number}> = ({x, y, title, price, note, look = 'outline', w = 330, s, at, out: o, priceAt}) => {
+  const p = pop(s, at);
+  const gone = o === undefined ? 0 : interpolate(s, [o, o + 0.5], [0, 1], {...clamp, easing: io});
+  const solid = look === 'solid';
+  const ghost = look === 'ghost';
+  const fg = solid ? '#0A0A0A' : ghost ? '#5E5E5E' : '#F2F2F2';
+  const h = w * 1.18;
+  return (
+    <div style={{position: 'absolute', left: x - w / 2, top: y - h / 2 - gone * 120, width: w, height: h, opacity: Math.min(1, p * 1.4) * (1 - gone), scale: `${0.9 + 0.1 * p}`, borderRadius: 22, border: `${STROKE}px solid ${ghost ? '#3E3E3E' : solid ? '#FFFFFF' : C.line}`, background: solid ? '#F2F2F2' : '#050505', filter: ghost ? undefined : solid ? 'drop-shadow(0 0 26px rgba(255,255,255,0.45))' : GLOW, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: w * 0.06, fontFamily: FONT}}>
+      <div style={{fontWeight: 800, fontSize: w * 0.075, letterSpacing: '0.24em', color: solid ? '#333' : ghost ? '#555' : '#BDBDBD', whiteSpace: 'nowrap'}}>{title}</div>
+      <div style={{fontWeight: 800, fontSize: w * 0.26, color: fg, fontVariantNumeric: 'tabular-nums', opacity: priceAt === undefined ? 1 : fade(s, priceAt, 0.3)}}>{price}</div>
+      {note && <div style={{fontWeight: 700, fontSize: w * 0.06, letterSpacing: '0.2em', color: solid ? '#444' : '#7A7A7A'}}>{note}</div>}
+    </div>
+  );
+};
