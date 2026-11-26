@@ -58,9 +58,9 @@ const World: React.FC = () => {
       <Pill x={0} y={5200} text="EVERY SALE IS A FIGHT" size={38} look="solid" s={s} at={14.7} />
 
       {/* D — buyers trust other buyers (0,7300) */}
-      <Pill x={0} y={6600} text="BUYERS TRUST OTHER BUYERS" size={36} look="solid" s={s} at={17.3} out={19.4} />
-      <Pill x={0} y={6600} text="SPIEGEL RESEARCH CENTER" size={34} s={s} at={19.6} />
-      <Caption x={0} y={6660} text="NORTHWESTERN UNIVERSITY" s={s} at={19.9} size={26} />
+      <Pill x={0} y={6560} text="BUYERS TRUST OTHER BUYERS" size={36} look="solid" s={s} at={17.3} out={19.4} />
+      <Pill x={0} y={6500} text="SPIEGEL RESEARCH CENTER" size={34} s={s} at={19.6} />
+      <Caption x={0} y={6555} text="NORTHWESTERN UNIVERSITY" s={s} at={19.9} size={26} />
       <div style={{opacity: fadeOut(s, 21.7)}}>
         <Ground y={7150} x0={-600} x1={600} s={s} at={17.3} />
         {Array.from({length: 6}, (_, i) => {
@@ -73,10 +73,8 @@ const World: React.FC = () => {
       </div>
       <ReviewCard x={-215} y={7180} stars={0} title="NO REVIEWS" s={s} at={22.1} starAt={99} dim={s > 26.6} />
       <ReviewCard x={215} y={7180} stars={5} title="5 REVIEWS" s={s} at={22.5} starAt={22.9} />
-      <div style={{opacity: fadeOut(s, 27.7)}}>
-        <Stat x={0} y={7600} value={`+${Math.round(interpolate(s, [23.8, 25.2], [0, 270], clamp))}%`} caption="MORE LIKELY TO BE BOUGHT" size={150} s={s} at={23.8} />
-      </div>
-      <Pill x={-215} y={6880} text="NOBODY VOUCHES" size={30} look="ghost" s={s} at={28.5} />
+      <Stat x={0} y={6810} value={`+${Math.round(interpolate(s, [23.8, 25.2], [0, 270], clamp))}%`} caption="MORE LIKELY TO BE BOUGHT" size={150} s={s} at={23.8} />
+      <Pill x={-215} y={7470} text="NOBODY VOUCHES" size={30} look="ghost" s={s} at={28.5} />
 
       {/* E — every sale leaves something (0,9800) */}
       <Pill x={0} y={9150} text="EVERY SALE LEAVES" size={36} s={s} at={30.4} />
@@ -146,12 +144,12 @@ const CAM = [
   {t: 16.0, x: 0, y: 4760, z: 1.0},
   {t: 16.8, x: 0, y: 6950, z: 1.06}, // trust
   {t: 21.4, x: 0, y: 6950, z: 1.1},
-  {t: 22.2, x: 0, y: 7230, z: 1.0}, // cards
-  {t: 23.4, x: 0, y: 7230, z: 1.02},
-  {t: 24.0, x: 0, y: 7380, z: 1.08}, // +270%
-  {t: 27.4, x: 0, y: 7380, z: 1.12},
-  {t: 28.1, x: -80, y: 7120, z: 1.08}, // nobody vouches
-  {t: 29.8, x: -80, y: 7120, z: 1.12},
+  {t: 22.2, x: 0, y: 7120, z: 1.0}, // cards
+  {t: 23.4, x: 0, y: 7120, z: 1.02},
+  {t: 24.0, x: 0, y: 7050, z: 1.04}, // +270% above the cards
+  {t: 27.4, x: 0, y: 7060, z: 1.08},
+  {t: 28.1, x: -60, y: 7150, z: 1.04}, // nobody vouches (the +270% stays in shot)
+  {t: 29.8, x: -60, y: 7150, z: 1.08},
   {t: 30.5, x: 0, y: 9620, z: 1.0}, // what each sale leaves
   {t: 37.4, x: 0, y: 9640, z: 1.06},
   {t: 38.1, x: 0, y: 12170, z: 0.98}, // the bend
