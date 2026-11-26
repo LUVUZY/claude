@@ -10,6 +10,7 @@ import {NextTo, NEXT_TO_FRAMES} from './NextTo';
 import {HookV2, HOOK_V2_FRAMES} from './HookV2';
 import {ObsessBuyer, OBSESS_FRAMES} from './ObsessBuyer';
 import {ThirdBuyer, THIRD_FRAMES} from './ThirdBuyer';
+import {EveryMillionaire, EM_FRAMES} from './EveryMillionaire';
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -32,5 +33,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="ObsessBuyerMusicReady" component={ObsessBuyer} defaultProps={{music: 'none' as const}} durationInFrames={OBSESS_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="ThirdBuyer" component={ThirdBuyer} durationInFrames={THIRD_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="ThirdBuyerMusicReady" component={ThirdBuyer} defaultProps={{music: 'none' as const}} durationInFrames={THIRD_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="EveryMillionaire" component={EveryMillionaire} durationInFrames={EM_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="EveryMillionaireMusicReady" component={EveryMillionaire} defaultProps={{music: 'none' as const}} durationInFrames={EM_FRAMES} fps={30} width={1920} height={1080} />
   </>
 );

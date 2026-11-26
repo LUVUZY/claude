@@ -22,15 +22,15 @@ Write in plain spoken English, short clauses, no jargon. Exactly this order:
 
 **Hook rules (the owner's #1 note: explanatory hooks are "mid"):**
 - Promise money, status or identity, not business advice: rich, millionaire, broke, "a completely different life".
-- Use concrete numbers and timeframes: "$10,000 vs $100,000", "six months", "three millionaires for one year".
+- Use concrete numbers and timeframes: "ten thousand vs a hundred thousand dollars", "six months", "three millionaires for one year".
 - Frame it as who you become, not what to do. "If you hang around 3 millionaires for a year, you'll become the next one"
   beats "talk to 3 buyers and you'll know more than 10 courses".
 - It should sound wrong or provocative at first glance.
 - Tie it back to buyers only after the hook: the Buyers Mind angle lives in steps 3–6, not in the first line.
 
 Reference hooks (all 18 follow the same shape: a short claim that sounds backwards):
-"Trying to save money might be the reason you're not making more." · "The first $10,000 is way harder than the next
-$100,000." · "Surround yourself with two millionaires, and you will become the third." · "Having no friends is actually
+"Trying to save money might be the reason you're not making more." · "The first ten thousand dollars is way harder than the next
+hundred thousand." · "Surround yourself with two millionaires, and you will become the third." · "Having no friends is actually
 the biggest advantage when it comes to getting rich." · "Motivation is the reason most people never get rich." ·
 "Being called delusional is usually the first stage of being called successful." · "The most money you will ever lose
 is the money you never tried to make." · "The easiest money you'll ever make is solving a problem you already solved for yourself."
@@ -42,11 +42,11 @@ Facts that are real and safe: the wine price experiment (people rated the same w
 
 ## 2. Visual formula
 
-- **Opening = payoff first.** A big money counter climbs (e.g. "SALES $18,142 → $1,004,083") over a spectacle shot:
+- **Opening = payoff first.** A big money counter climbs (e.g. a SALES counter running from 18,142 to over a million dollars) over a spectacle shot:
   money piling up, camera pulling out to reveal it, character ends arms-up. Then the video explains how.
 - **One clean metaphor per sentence.** New picture roughly every 1.5–4 s. Never a slide with a title.
 - **Ending = growth curve.** A flat or sawtooth line turns exponential, a small figure rides the tip, the counter
-  climbs to ~$1M, and the closing line appears in bold caps at the top.
+  climbs to about a million, and the closing line appears in bold caps at the top.
 - **Almost no text.** Allowed: money/number counters, tiny uppercase labels under things (14–18 px, letter-spacing
   ~0.28em, #C8C8C8), white speech/label pills, the final line. No scene titles, no burned-in subtitles
   (TikTok's own UI and captions cover the bottom 25% and right edge).
@@ -63,6 +63,7 @@ compass · flowchart · "TODAY" figure projecting a light onto a giant dashed "T
 
 - Background near-black: `#030303`–`#050505`. Their darkest pixels ≈ 2/255, typical ≈ 10–19/255. Grey backgrounds look cheap.
 - Faint dot grid `rgba(255,255,255,0.045)` 38 px, dashed floor line, strong vignette.
+- Always put `grayscale(1)` on the world layers: emoji/icons otherwise render in colour and break the look.
 - Whites ≈ `#E6E6E6`, outlines 3–6 px `#D6D6D6`. Global `contrast(1.15–1.18)`.
 - **Bloom:** render the scene twice, second copy `blur(14–16px) brightness(1.3)` at ~45–50% opacity with `mix-blend-mode: screen`.
 - **Lighting:** an overhead spotlight cone + floor pool over every main character. Glowing objects (screens, phones, lamps) light their surroundings.
