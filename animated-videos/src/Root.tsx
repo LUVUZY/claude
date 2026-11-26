@@ -6,6 +6,7 @@ import {MaybeLater, MAYBE_LATER_FRAMES} from './MaybeLater';
 import {CheapRisk, CHEAP_RISK_FRAMES} from './CheapRisk';
 import {CheapRiskWide, WIDE_FRAMES} from './CheapRiskWide';
 import {CryoCalibration} from './CryoCalibration';
+import {NextTo, NEXT_TO_FRAMES} from './NextTo';
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -21,5 +22,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="CheapRiskWide" component={CheapRiskWide} durationInFrames={WIDE_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="CheapRiskWideMusicReady" component={CheapRiskWide} defaultProps={{music: 'none' as const}} durationInFrames={WIDE_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="CryoCalibration" component={CryoCalibration} durationInFrames={130} fps={30} width={1920} height={1080} />
+    <Composition id="NextTo" component={NextTo} durationInFrames={NEXT_TO_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="NextToMusicReady" component={NextTo} defaultProps={{music: 'none' as const}} durationInFrames={NEXT_TO_FRAMES} fps={30} width={1920} height={1080} />
   </>
 );

@@ -1,0 +1,86 @@
+{
+ "beat": 0.8892,
+ "drop": 6.623,
+ "strip": 53.751,
+ "end": 62.2,
+ "phrases": [
+  {
+   "k": 0,
+   "start": 0.25,
+   "end": 6.473,
+   "text": "You'll spend six dollars on a coffee without thinking. But a two dollar app? You'll read every review first."
+  },
+  {
+   "k": 1,
+   "start": 6.623,
+   "end": 9.783,
+   "text": "That's because nobody actually knows what anything is worth."
+  },
+  {
+   "k": 2,
+   "start": 10.18,
+   "end": 14.581,
+   "text": "So your brain takes a shortcut. It compares the price to whatever's next to it."
+  },
+  {
+   "k": 3,
+   "start": 15.515,
+   "end": 19.395,
+   "text": "Coffee sits next to other coffee. Six dollars feels normal."
+  },
+  {
+   "k": 4,
+   "start": 19.961,
+   "end": 23.763,
+   "text": "Apps sit next to free apps. Two dollars feels like a lot."
+  },
+  {
+   "k": 5,
+   "start": 24.407,
+   "end": 28.292,
+   "text": "Now imagine two sellers with the same ninety-nine dollar course."
+  },
+  {
+   "k": 6,
+   "start": 28.853,
+   "end": 33.105,
+   "text": "The first one puts it next to other courses, and the free videos on YouTube."
+  },
+  {
+   "k": 7,
+   "start": 33.299,
+   "end": 36.653,
+   "text": "Next to free, ninety-nine dollars looks expensive."
+  },
+  {
+   "k": 8,
+   "start": 36.856,
+   "end": 39.347,
+   "text": "The second one puts it next to the problem."
+  },
+  {
+   "k": 9,
+   "start": 39.523,
+   "end": 43.725,
+   "text": "Next to a two thousand dollar mistake, ninety-nine dollars looks cheap."
+  },
+  {
+   "k": 10,
+   "start": 43.969,
+   "end": 47.893,
+   "text": "Same course. Same price. Different comparison."
+  },
+  {
+   "k": 11,
+   "start": 48.415,
+   "end": 53.563,
+   "text": "Of course, the comparison has to be honest. If the problem isn't real, people can tell."
+  },
+  {
+   "k": 12,
+   "start": 53.751,
+   "end": 60.004,
+   "text": "But if you remember one thing, remember this. People don't judge your price. They judge what's next to it."
+  }
+ ]
+}
