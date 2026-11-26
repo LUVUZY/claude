@@ -118,7 +118,20 @@ Every time a video is sent to the owner, include a ready-to-paste **TikTok capti
 - No toolkit pitch in the caption; suggest a pinned comment instead (e.g. "Comment BUYER and I'll send you …").
 Also say which file to post (music-ready + song added in-app at ≈1:48 is the safer choice).
 
-## 8. Quality checklist (each was a real complaint)
+## 8. Measured targets (averages of 18 reference videos)
+
+Run `python3 scripts/measure_video.py <render.mp4> <speech_end>` on every render. Reference values:
+| metric | reference | what it means |
+|---|---|---|
+| active % | **64** (range 33–88) | share of time something visibly moves. Our early videos sat at 18–49: the #1 gap. Aim ≥ 65. |
+| mid brightness (p50) | **~10–12** | they are near-black with a soft ambient haze, not pure black. p50 of 2–4 looks too dead. |
+| black level (p5) | ~2–3 | true blacks. |
+| words per minute | ~180 | continuous, brisk narration. |
+| length | **64–75 s** | scripts of ~160–190 words. Ours ran 49–55 s: too short. |
+| picture changes / min | ~8.5 | |
+The script also lists every still stretch ≥ 1.5 s, fix each one.
+
+## 9. Quality checklist (each was a real complaint)
 
 - [ ] Hook shows the payoff/spectacle in frame 1, no empty axes.
 - [ ] No scene sits still for more than ~1.5 s.
