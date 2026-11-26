@@ -20,6 +20,14 @@ Write in plain spoken English, short clauses, no jargon. Exactly this order:
 6. **"Of course, …"** one honest caveat.
 7. **Closing line** that flips or sharpens the hook. It is also shown on screen in caps.
 
+**Hook rules (the owner's #1 note: explanatory hooks are "mid"):**
+- Promise money, status or identity, not business advice: rich, millionaire, broke, "a completely different life".
+- Use concrete numbers and timeframes: "$10,000 vs $100,000", "six months", "three millionaires for one year".
+- Frame it as who you become, not what to do. "If you hang around 3 millionaires for a year, you'll become the next one"
+  beats "talk to 3 buyers and you'll know more than 10 courses".
+- It should sound wrong or provocative at first glance.
+- Tie it back to buyers only after the hook: the Buyers Mind angle lives in steps 3–6, not in the first line.
+
 Reference hooks (all 18 follow the same shape: a short claim that sounds backwards):
 "Trying to save money might be the reason you're not making more." · "The first $10,000 is way harder than the next
 $100,000." · "Surround yourself with two millionaires, and you will become the third." · "Having no friends is actually
