@@ -111,11 +111,10 @@ shoulders; use the `POSES` presets (`rest`, `type`, `cheer`, `point`, `hold`, `s
 
 ## 7. Delivering
 
-Every time a video is sent to the owner, include a ready-to-paste **TikTok caption** with it (they upload straight away):
-- Line 1: the hook idea with searchable words (TikTok search works like Google), one emoji.
-- A question that invites comments, ending in 👇.
-- 4–5 hashtags, broad + niche (e.g. #entrepreneur #salespsychology #smallbusinesstips #businesstips #makemoneyonline).
-- No toolkit pitch in the caption; suggest a pinned comment instead (e.g. "Comment BUYER and I'll send you …").
+Every time a video is sent to the owner, include a ready-to-paste **TikTok caption** with it. Keep it plain:
+- **One sentence.** No emojis. About **3 hashtags**.
+- Example: `Every millionaire just figured out what people will pay for. #entrepreneur #sales #business`
+- No pitches, questions, or pinned-comment suggestions unless asked.
 Also say which file to post (music-ready + song added in-app at ≈1:48 is the safer choice).
 
 ## 8. Measured targets (averages of 18 reference videos)
