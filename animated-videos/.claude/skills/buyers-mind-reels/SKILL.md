@@ -20,6 +20,15 @@ Write in plain spoken English, short clauses, no jargon. Exactly this order:
 6. **"Of course, …"** one honest caveat.
 7. **Closing line** that flips or sharpens the hook. It is also shown on screen in caps.
 
+Reference hooks (all 18 follow the same shape: a short claim that sounds backwards):
+"Trying to save money might be the reason you're not making more." · "The first $10,000 is way harder than the next
+$100,000." · "Surround yourself with two millionaires, and you will become the third." · "Having no friends is actually
+the biggest advantage when it comes to getting rich." · "Motivation is the reason most people never get rich." ·
+"Being called delusional is usually the first stage of being called successful." · "The most money you will ever lose
+is the money you never tried to make." · "The easiest money you'll ever make is solving a problem you already solved for yourself."
+Their closing lines resolve the hook in one breath, e.g. "...money avoids the people who need it the most and finds the
+people who are too busy to notice it."
+
 Topic rule: money-adjacent and buyer-psychology. Every claim must be true; no invented statistics.
 Facts that are real and safe: the wine price experiment (people rated the same wine better when told it cost more).
 
