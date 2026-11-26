@@ -10,11 +10,15 @@ this exact format. Follow it literally. Deviating from it is what made earlier a
 
 ## 0. Which style (read first)
 
-The owner's direction (Nov 2026): **the premium thin-line style is the default** — "these are high quality animations,
-we should be like that." Use the cryothum figure style (sections 2–4 below) only when asked for it.
+There are **two saved styles. Keep both; neither replaces the other.** The owner asks for one or the other by name
+(or for "both", which means one new video in each).
+- **V1 — cryothum figure style** (sections 2–4): grey figures with arms, props, bloom haze, scene cuts with zoom/blur.
+  Examples: `src/EveryMillionaire.tsx`, `src/WhoTheyBecome.tsx`.
+- **V2 — premium thin-line style** (this section): pure black, thin glowing line art, pills, one gliding camera.
+  Examples: `src/LessTime.tsx`, `src/LineStyleTest.tsx`. Kit: `src/LineKit.tsx`.
 The script formula (section 1), voice, Whisper timing, captions and delivering rules apply to both.
 
-### Premium line style (default) — measured from @cps_user and @krynoth_11 (6 videos)
+### V2 — premium line style, measured from @cps_user and @krynoth_11 (6 videos)
 
 **Kit:** `src/LineKit.tsx` (all pieces below) and `src/LineStyleTest.tsx` (a working 15 s example). Build every new
 video from the kit; add to the kit instead of drawing one-offs.
@@ -64,10 +68,12 @@ video from the kit; add to the kit instead of drawing one-offs.
 - Closing line flips the hook: "Fear does not make you poor. Reacting to it does." · "School made you an employee.
   What you do next decides if you stay one." · "When everyone climbs the same ladder, the ladder stops being the advantage."
 
-**Music for this style:** the owner's second clip (an instrumental, ~62 BPM, beat ≈ 0.97 s; the clip was filmed
-IRL and is only used for its audio). Saved outside git at `scratchpad/song/song2.wav`. Its loud section runs for the
-first ~45 s with short dips around 16 s, 30 s and 39 s, then it goes quiet. Song name unknown: ask the owner
-for it when posting so it can be added in-app.
+**Music for V2:** the owner's second clip (an instrumental, ~62 BPM, beat ≈ 0.97 s; the clip was filmed IRL and is
+only used for its audio; its name doesn't matter). Saved outside git at `scratchpad/song/song2.wav`. Loud for the
+first ~45 s with short dips around 16 s, 30 s and 39 s, then quiet. Bed: the clip from 0 s, faded out at the end and
+side-chain ducked under the voice (`ffmpeg ... sidechaincompress=threshold=0.03:ratio=6:attack=40:release=500`),
+saved as `public/music/song-bed-N.wav` (git-ignored). V1 keeps using "meaningful love" (section 5).
+SFX for V2: `sfx-soft/whoosh` under every camera glide + ~7 accents, same rules as section 5.
 
 ## 1. Script formula (150–170 words, 60–75 s spoken)
 
@@ -101,7 +107,7 @@ people who are too busy to notice it."
 Topic rule: money-adjacent and buyer-psychology. Every claim must be true; no invented statistics.
 Facts that are real and safe: the wine price experiment (people rated the same wine better when told it cost more).
 
-## 2. Visual formula (cryothum figure style)
+## 2. Visual formula (V1, cryothum figure style)
 
 - **Opening = payoff first.** A big money counter climbs (e.g. a SALES counter running from 18,142 to over a million dollars) over a spectacle shot:
   money piling up, camera pulling out to reveal it, character ends arms-up. Then the video explains how.

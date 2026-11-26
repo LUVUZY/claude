@@ -53,9 +53,11 @@ export const camAt = (keys: CamKey[], s: number) => {
     }
     b = keys[i];
   }
-  // a key holds until MOVE seconds before the next key, then glides into it
+  // Big moves (a new idea): hold, then glide in the last 0.35–0.8 s. Small moves (same spot, push in/out or a
+  // short slide): spread over the whole interval, so the camera is never frozen between ideas.
+  const far = Math.hypot(b.x - a.x, b.y - a.y) > 220 || Math.abs((b.z ?? 1) - (a.z ?? 1)) > 0.12;
   const MOVE = Math.min(0.8, Math.max(0.35, (b.t - a.t) * 0.4));
-  const p = a === b ? 0 : interpolate(s, [b.t - MOVE, b.t], [0, 1], {...clamp, easing: io});
+  const p = a === b ? 0 : far ? interpolate(s, [b.t - MOVE, b.t], [0, 1], {...clamp, easing: io}) : interpolate(s, [a.t, b.t], [0, 1], {...clamp, easing: Easing.inOut(Easing.sin)});
   const lerp = (u: number, v: number) => u + (v - u) * p;
   return {x: lerp(a.x, b.x), y: lerp(a.y, b.y), z: lerp(a.z ?? 1, b.z ?? 1)};
 };
@@ -119,11 +121,15 @@ export const Pawn: React.FC<{x: number; y: number; h?: number; look?: 'hero' | '
 };
 
 /** Row of pawns; `hi` index is the hero, the rest dim. Each fades in with a stagger. */
-export const Crowd: React.FC<{x: number; y: number; n: number; gap: number; h?: number; hi?: number; s: number; at: number; stagger?: number; cap?: boolean; ghost?: boolean}> = ({x, y, n, gap, h = 110, hi = -1, s, at, stagger = 0.04, cap, ghost = true}) => (
+export const Crowd: React.FC<{x: number; y: number; n: number; gap: number; h?: number; hi?: number; s: number; at: number; stagger?: number; cap?: boolean; ghost?: boolean; walk?: number}> = ({x, y, n, gap, h = 110, hi = -1, s, at, stagger = 0.04, cap, ghost = true, walk = 0}) => (
   <>
-    {Array.from({length: n}, (_, i) => (
-      <Pawn key={i} x={x + i * gap} y={y} h={h} cap={cap} look={i === hi ? 'hero' : ghost ? 'ghost' : 'line'} op={fade(s, at + i * stagger, 0.3)} />
-    ))}
+    {Array.from({length: n}, (_, i) => {
+      // walk: px to walk in from (negative = from the left). Each pawn arrives with a small hop and stays put.
+      const t0 = at + i * (walk ? 0.12 : stagger);
+      const p = walk ? interpolate(s, [t0, t0 + 0.9], [0, 1], {...clamp, easing: out}) : 1;
+      const hop = walk && p > 0 && p < 1 ? Math.abs(Math.sin(p * Math.PI * 4)) * h * 0.06 : 0;
+      return <Pawn key={i} x={x + i * gap + (1 - p) * walk} y={y} h={h} cap={cap} bob={hop} look={i === hi ? 'hero' : ghost ? 'ghost' : 'line'} op={fade(s, t0, 0.3)} />;
+    })}
   </>
 );
 
@@ -189,8 +195,8 @@ export const Cross: React.FC<{x: number; y: number; size: number; s: number; at:
 
 // ---------- data ----------
 /** Ring gauge: grey track, white arc filling to pct, number counting in the middle. */
-export const Ring: React.FC<{x: number; y: number; r?: number; pct: number; s: number; at: number; d?: number; label?: string; dim?: boolean}> = ({x, y, r = 120, pct, s, at, d = 1.2, label, dim}) => {
-  const v = count(s, at + 0.2, d, pct);
+export const Ring: React.FC<{x: number; y: number; r?: number; pct: number; s: number; at: number; d?: number; label?: string; dim?: boolean; v?: number}> = ({x, y, r = 120, pct, s, at, d = 1.2, label, dim, v: vIn}) => {
+  const v = vIn ?? count(s, at + 0.2, d, pct);
   const L = 2 * Math.PI * r;
   return (
     <div style={{position: 'absolute', left: x - r - 20, top: y - r - 20, width: 2 * r + 40, height: 2 * r + 40, opacity: dim ? 0.35 : 1, ...enter(s, at)}}>
@@ -269,8 +275,12 @@ export const Rows: React.FC<{x: number; y: number; w?: number; title?: string; r
 
 // ---------- line icons ----------
 // Each icon is drawn on with its stroke (draw = 0..1), then glows. Size is the box edge in px.
-type IconName = 'school' | 'building' | 'doc' | 'cert' | 'briefcase' | 'globe' | 'bell' | 'shield' | 'bank' | 'phone' | 'search' | 'door' | 'question' | 'arrow' | 'network' | 'cart' | 'box' | 'tag' | 'coin' | 'eye' | 'chat' | 'star' | 'lock' | 'chart';
+type IconName = 'calendar' | 'clock' | 'hourglass' | 'gift' | 'school' | 'building' | 'doc' | 'cert' | 'briefcase' | 'globe' | 'bell' | 'shield' | 'bank' | 'phone' | 'search' | 'door' | 'question' | 'arrow' | 'network' | 'cart' | 'box' | 'tag' | 'coin' | 'eye' | 'chat' | 'star' | 'lock' | 'chart';
 const ICONS: Record<IconName, string> = {
+  calendar: 'M12 20 H88 V88 H12 Z M12 38 H88 M30 10 V28 M70 10 V28 M26 52 H36 M46 52 H56 M66 52 H76 M26 70 H36 M46 70 H56',
+  clock: 'M10 50 a40 40 0 1 0 80 0 a40 40 0 1 0 -80 0 M50 24 V50 L66 62',
+  hourglass: 'M24 8 H76 M24 92 H76 M30 8 C30 36 50 40 50 50 C50 60 30 64 30 92 M70 8 C70 36 50 40 50 50 C50 60 70 64 70 92',
+  gift: 'M12 36 H88 V52 H12 Z M18 52 V90 H82 V52 M50 36 V90 M50 36 C40 18 22 22 30 34 M50 36 C60 18 78 22 70 34',
   school: 'M10 45 L50 15 L90 45 M18 40 V88 H82 V40 M42 88 V64 H58 V88 M26 52 H38 V62 H26 Z M62 52 H74 V62 H62 Z M44 34 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0',
   building: 'M24 10 H76 V90 H24 Z M34 22 H46 V34 H34 Z M54 22 H66 V34 H54 Z M34 44 H46 V56 H34 Z M54 44 H66 V56 H54 Z M42 90 V70 H58 V90',
   doc: 'M24 8 H62 L78 24 V92 H24 Z M62 8 V24 H78 M34 40 H68 M34 52 H68 M34 64 H68 M34 76 H56',
@@ -320,3 +330,23 @@ export const DotField: React.FC<{x: number; y: number; cols: number; rows: numbe
     })}
   </>
 );
+
+/** Faint drifting dust in world space; spread over [x0,x1]x[y0,y1]. Gives the camera depth and keeps holds alive. */
+export const Dust: React.FC<{x0: number; x1: number; y0: number; y1: number; n?: number}> = ({x0, x1, y0, y1, n = 90}) => {
+  const s = useSec();
+  const r = (i: number) => {
+    const v = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+    return v - Math.floor(v);
+  };
+  return (
+    <>
+      {Array.from({length: n}, (_, i) => {
+        const life = (s * (0.04 + r(i + 5) * 0.05) + r(i)) % 1;
+        const x = x0 + r(i + 1) * (x1 - x0) + Math.sin(s * 0.4 + i) * 30;
+        const y = y0 + r(i + 2) * (y1 - y0) - life * 160;
+        const size = 2 + r(i + 3) * 3;
+        return <div key={i} style={{position: 'absolute', left: x, top: y, width: size, height: size, borderRadius: size, background: '#FFFFFF', opacity: Math.sin(life * Math.PI) * (0.12 + r(i + 4) * 0.25)}} />;
+      })}
+    </>
+  );
+};
