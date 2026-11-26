@@ -82,6 +82,8 @@ shoulders; use the `POSES` presets (`rest`, `type`, `cheer`, `point`, `hold`, `s
 - **Every shot drifts:** slow zoom 1.00 ↔ 1.04–1.08 across the shot.
 - **Something always moves:** counters ticking, items accumulating, dust/sparkles, typing.
 - React gotcha: CSS `scale` must be a **string** (`` scale: `${z}` ``). A number silently becomes "px" and is ignored.
+- Looping particles (coins, bills, sparkles) must fade in **and** out (`opacity = sin(life·π)`); a plain `1 - life` makes them teleport when the loop restarts.
+- Crowds walk in from off-screen and stay put in a queue; never slide a figure back through others.
 - Things land on the word: key animations start at the exact Whisper word time.
 
 ## 5. Sound

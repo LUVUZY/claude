@@ -100,7 +100,7 @@ const Shot: React.FC<{start: number; end: number; children: React.ReactNode; zoo
 // ---------- scenes ----------
 // 1. payoff first: buyers queue at his stall, money piles up, camera pulls out, arms up
 const PYR: {x: number; y: number}[] = [];
-for (let r = 0; r < 8; r++) for (let k = 0; k < 10 - r; k++) PYR.push({x: 1180 + r * 50 + k * 100, y: FLOOR - 27 - r * 56});
+for (let r = 0; r < 8; r++) for (let k = 0; k < 9 - r; k++) PYR.push({x: 1340 + r * 50 + k * 100, y: FLOOR - 27 - r * 56});
 const Hook: React.FC = () => {
   const s = useSec();
   const zoom = interpolate(s, [0, 3.44], [1.35, 0.92], {...clamp, easing: Easing.inOut(Easing.cubic)});
@@ -110,21 +110,22 @@ const Hook: React.FC = () => {
       <AbsoluteFill style={{scale: `${zoom}`, transformOrigin: '30% 85%'}}>
         <Beam x={480} w={560} a={1.3} />
         <Stall x={480} />
-        <P x={480} y={FLOOR - 250} R={50} pose={cheer ? 'cheer' : 'point'} />
+        <P x={480} y={FLOOR - 205} R={42} pose={cheer ? 'shrug' : 'hold'} />
         <div style={{position: 'absolute', left: 480 - 80, top: 360, width: 160, padding: '10px 0', borderRadius: 14, border: `5px solid ${G}`, background: s > 2.83 ? '#EDEDED' : 'rgba(16,16,16,0.97)', color: s > 2.83 ? '#141414' : '#E6E6E6', textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 52, boxShadow: s > 2.83 ? '0 0 50px rgba(255,255,255,0.7)' : undefined}}>$49</div>
         {/* the queue that keeps coming */}
-        {Array.from({length: 9}, (_, i) => {
-          const t0 = -0.4 + i * 0.32;
-          const p = ramp(s, t0, t0 + 1.1, 0, 1, Easing.out(Easing.cubic));
-          const x = interpolate(p, [0, 1], [1900 + i * 60, 760 + (i % 5) * 80]);
-          const leave = ramp(s, t0 + 1.2, t0 + 1.7, 0, 1, Easing.in(Easing.quad));
-          return <P key={i} x={x - leave * 160} y={FLOOR} R={24} facing={-1} dim={0.15 + leave * 0.6} />;
+        {Array.from({length: 7}, (_, i) => {
+          const t0 = i * 0.32;
+          if (s < t0) return null;
+          const p = ramp(s, t0, t0 + 1.0, 0, 1, Easing.out(Easing.cubic));
+          const x = interpolate(p, [0, 1], [2200, 760 + i * 66]);
+          const walking = p > 0 && p < 1;
+          return <P key={i} x={x} y={FLOOR - (walking ? Math.abs(Math.sin(s * 10 + i)) * 6 : 0)} R={24} facing={-1} dim={0.12 + i * 0.05} />;
         })}
         {/* coins flying to the stall, money piling up */}
         {Array.from({length: 10}, (_, i) => {
           const life = ((s - 0.2) * 1.3 + i / 10) % 1;
           if (s < 0.2) return null;
-          return <Coin key={i} x={760 + (i % 5) * 80 - life * 280} y={FLOOR - 120 - Math.sin(life * Math.PI) * 160} op={1 - life * 0.3} />;
+          return <Coin key={i} x={780 + (i % 5) * 78 - life * 300} y={FLOOR - 120 - Math.sin(life * Math.PI) * 160} op={Math.sin(life * Math.PI)} />;
         })}
         {PYR.map((b, i) => {
           const t0 = 0.3 + i * 0.045;
@@ -164,7 +165,7 @@ const Luck: React.FC = () => {
       {/* lottery tickets drifting down on the lucky side */}
       {s > 5.2 && Array.from({length: 6}, (_, i) => {
         const life = ((s - 5.2) * 0.8 + rand(i)) % 1;
-        return <div key={i} style={{position: 'absolute', left: 420 + rand(i + 3) * 340, top: 120 + life * 700, width: 60, height: 32, borderRadius: 4, border: `3px solid ${G}`, rotate: `${life * 300}deg`, opacity: 1 - life}} />;
+        return <div key={i} style={{position: 'absolute', left: 420 + rand(i + 3) * 340, top: 120 + life * 700, width: 60, height: 32, borderRadius: 4, border: `3px solid ${G}`, rotate: `${life * 300}deg`, opacity: Math.sin(life * Math.PI)}} />;
       })}
     </AbsoluteFill>
   );
@@ -204,7 +205,7 @@ const Notice: React.FC = () => {
       {s > 13.4 && Array.from({length: 8}, (_, i) => {
         const life = ((s - 13.4) * 1.4 + i / 8) % 1;
         const from = xs[i < hero ? i : i + 1];
-        return <Coin key={i} x={from + (xs[hero] - from) * life} y={600 - Math.sin(life * Math.PI) * 140} op={1 - life * 0.4} />;
+        return <Coin key={i} x={from + (xs[hero] - from) * life} y={600 - Math.sin(life * Math.PI) * 140} op={Math.sin(life * Math.PI)} />;
       })}
       <Tiny x={xs[hero]} y={FLOOR + 22} text="NOTICED" at={11.27} />
     </AbsoluteFill>
@@ -280,7 +281,7 @@ const Listener: React.FC = () => {
           {[1380, 1480, 1580, 1680].map((x, i) => <P key={x} x={x} R={24} pose={i % 2 ? 'hold' : 'rest'} />)}
           {Array.from({length: 4}, (_, i) => {
             const life = ((s - 23.6) * 1.2 + i / 4) % 1;
-            return <Coin key={i} x={1380 + i * 100} y={700 - life * 220} op={1 - life} />;
+            return <Coin key={i} x={1380 + i * 100} y={700 - life * 220} op={Math.sin(life * Math.PI)} />;
           })}
           <Tiny x={1530} y={FLOOR + 22} text="WHAT PEOPLE BUY" at={24.0} />
         </>
@@ -342,7 +343,7 @@ const Room: React.FC = () => {
       {s > 36.0 && Array.from({length: 12}, (_, i) => {
         const life = ((s - 36) * 1.3 + i / 12) % 1;
         const from = xs[[0, 2, 3, 5][i % 4]];
-        return <Coin key={i} x={from + (1180 - from) * life} y={680 - Math.sin(life * Math.PI) * 150} op={1 - life * 0.3} />;
+        return <Coin key={i} x={from + (1180 - from) * life} y={680 - Math.sin(life * Math.PI) * 150} op={Math.sin(life * Math.PI)} />;
       })}
     </AbsoluteFill>
   );
