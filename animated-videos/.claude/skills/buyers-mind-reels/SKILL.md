@@ -69,8 +69,9 @@ video from the kit; add to the kit instead of drawing one-offs.
   What you do next decides if you stay one." · "When everyone climbs the same ladder, the ladder stops being the advantage."
 
 **Vertical (TikTok / Reels, 1080×1920):** don't shrink the wide layout. Build a vertical World: scenes stacked top to
-bottom (camera glides down), content within x ±470 and y −800…+600 of the camera centre, `Camera cy={0.42}` so nothing
-important sits in the bottom 25% (app captions/buttons) or the bottom-right. Bigger type than wide: pills 30–38 px,
+bottom (camera glides down), content within x ±470 and y −670…+520 of the camera centre, `Camera cy={0.38} fit={0.92}`.
+That keeps everything between ~7% and **~65% of the screen height**: the owner flagged content sitting under the
+TikTok caption/title text, so nothing goes lower than that (check every frame; fade lingering items out on push-ins). Bigger type than wide: pills 30–38 px,
 stats 120–150 px, final line ~118 px on two lines. Example: `src/FirstTenKVertical.tsx`.
 **Background grid:** `Camera grid` draws a cryothum-style dot grid in world space (moves with the camera);
 `Backdrop dots` is the faint screen-fixed one. Offer the owner both when comparing.

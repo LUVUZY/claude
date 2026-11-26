@@ -5,7 +5,8 @@ import {CUES, Chart, FIRST_10K_FRAMES, ReviewCard, Seesaw, Tick, money} from './
 
 // "First 10K", re-laid out for a 1080x1920 phone screen (TikTok / Reels).
 // Scenes are stacked top-to-bottom; the camera glides DOWN between them. Usable area per scene is about
-// x ±470 and y −800…+600 around the camera centre (the bottom ~25% is covered by the app's caption and buttons).
+// x ±470 and y −670…+520 around the camera centre, with Camera cy 0.38 / fit 0.92: that keeps everything between
+// ~7% and ~65% of the screen height, clear of the app header and of the caption/title text at the bottom.
 export const FIRST_10K_V_FRAMES = FIRST_10K_FRAMES;
 
 const W = 900; // chart width
@@ -22,11 +23,11 @@ const World: React.FC = () => {
       <Dust x0={-700} x1={700} y0={-1200} y1={15800} n={260} />
 
       {/* A — hook (0,0): the slow flat stretch, then the rocket. Vertical suits the climb. */}
-      <Ground y={450} x0={-600} x1={600} s={s} at={0} />
-      <Chart ox={-450} oy={450} w={W} h={1050} prog={hp} />
-      <Tick x={-450 + 0.55 * W} y0={450} y1={-640} label="$10K" s={s} at={0.5} />
-      <Pill x={-230} y={330} text="THE FIRST $10K" size={30} look={s > 2.6 ? 'ghost' : 'outline'} s={s} at={0.5} />
-      <Pill x={170} y={-700} text="THE NEXT $100K" size={36} look="solid" s={s} at={2.7} />
+      <Ground y={400} x0={-600} x1={600} s={s} at={0} />
+      <Chart ox={-450} oy={400} w={W} h={950} prog={hp} />
+      <Tick x={-450 + 0.55 * W} y0={400} y1={-560} label="$10K" s={s} at={0.5} />
+      <Pill x={-230} y={280} text="THE FIRST $10K" size={30} look={s > 2.6 ? 'ghost' : 'outline'} s={s} at={0.5} />
+      <Pill x={170} y={-620} text="THE NEXT $100K" size={36} look="solid" s={s} at={2.7} />
       <Stat x={-60} y={-230} value={money(hookMoney)} caption="EARNED" size={130} s={s} at={0} />
 
       {/* B — most people quit (0,2400) */}
@@ -45,16 +46,16 @@ const World: React.FC = () => {
       <Pill x={-60} y={2520} text="MOST PEOPLE QUIT HERE" size={34} s={s} at={5.0} />
 
       {/* C — starting from zero (0,4800) */}
-      <Icon name="briefcase" x={-300} y={4380} size={170} s={s} at={10.9} label="SKILLS" />
-      <Cross x={-300} y={4380} size={200} s={s} at={11.6} />
-      <Icon name="cart" x={0} y={4380} size={170} s={s} at={12.6} label="CUSTOMERS" />
-      <Cross x={0} y={4380} size={200} s={s} at={13.1} />
-      <Icon name="star" x={300} y={4380} size={170} s={s} at={13.6} label="PROOF" />
-      <Cross x={300} y={4380} size={200} s={s} at={14.0} />
-      <Stat x={0} y={4760} value="$0" size={150} s={s} at={10.55} />
-      <Ground y={5250} x0={-600} x1={600} s={s} at={8.9} />
-      <Pawn x={0} y={5250} h={300} look="hero" op={fade(s, 8.95)} bob={s > 14.4 ? Math.abs(Math.sin(s * 9)) * 9 : Math.sin(s * 2.4) * 3} />
-      <Pill x={0} y={5370} text="EVERY SALE IS A FIGHT" size={38} look="solid" s={s} at={14.7} />
+      <Icon name="briefcase" x={-300} y={4330} size={170} s={s} at={10.9} label="SKILLS" />
+      <Cross x={-300} y={4330} size={200} s={s} at={11.6} />
+      <Icon name="cart" x={0} y={4330} size={170} s={s} at={12.6} label="CUSTOMERS" />
+      <Cross x={0} y={4330} size={200} s={s} at={13.1} />
+      <Icon name="star" x={300} y={4330} size={170} s={s} at={13.6} label="PROOF" />
+      <Cross x={300} y={4330} size={200} s={s} at={14.0} />
+      <Stat x={0} y={4600} value="$0" size={150} s={s} at={10.55} />
+      <Ground y={5120} x0={-600} x1={600} s={s} at={8.9} />
+      <Pawn x={0} y={5120} h={300} look="hero" op={fade(s, 8.95)} bob={s > 14.4 ? Math.abs(Math.sin(s * 9)) * 9 : Math.sin(s * 2.4) * 3} />
+      <Pill x={0} y={5200} text="EVERY SALE IS A FIGHT" size={38} look="solid" s={s} at={14.7} />
 
       {/* D — buyers trust other buyers (0,7300) */}
       <Pill x={0} y={6600} text="BUYERS TRUST OTHER BUYERS" size={36} look="solid" s={s} at={17.3} out={19.4} />
@@ -72,7 +73,9 @@ const World: React.FC = () => {
       </div>
       <ReviewCard x={-215} y={7180} stars={0} title="NO REVIEWS" s={s} at={22.1} starAt={99} dim={s > 26.6} />
       <ReviewCard x={215} y={7180} stars={5} title="5 REVIEWS" s={s} at={22.5} starAt={22.9} />
-      <Stat x={0} y={7600} value={`+${Math.round(interpolate(s, [23.8, 25.2], [0, 270], clamp))}%`} caption="MORE LIKELY TO BE BOUGHT" size={150} s={s} at={23.8} />
+      <div style={{opacity: fadeOut(s, 27.7)}}>
+        <Stat x={0} y={7600} value={`+${Math.round(interpolate(s, [23.8, 25.2], [0, 270], clamp))}%`} caption="MORE LIKELY TO BE BOUGHT" size={150} s={s} at={23.8} />
+      </div>
       <Pill x={-215} y={6880} text="NOBODY VOUCHES" size={30} look="ghost" s={s} at={28.5} />
 
       {/* E — every sale leaves something (0,9800) */}
@@ -96,14 +99,14 @@ const World: React.FC = () => {
       ))}
 
       {/* F — the line bends (0,12300) + G people who stop at 9,000 */}
-      <Ground y={12800} x0={-600} x1={600} s={s} at={37.8} />
-      <Chart ox={-450} oy={12800} w={W} h={1050} prog={fp} />
-      <Tick x={-450 + 0.55 * W} y0={12800} y1={11700} label="$10K" s={s} at={38.2} />
-      <Stat x={-160} y={11640} value={money(fMoney)} caption="EARNED" size={120} s={s} at={38.0} />
-      <Pill x={170} y={11420} text="EACH SALE EASIER" size={34} look="solid" s={s} at={39.3} />
-      <Pawn x={-450 + 0.5 * W} y={12785} h={140} look="ghost" op={fade(s, 46.4)} />
-      <Pill x={-450 + 0.5 * W - 60} y={12540} text="STOPPED AT $9,000" size={30} look="ghost" s={s} at={47.2} />
-      <Caption x={-450 + 0.5 * W - 60} y={12860} text="NEVER SAW THE BEND" s={s} at={48.4} dim size={26} />
+      <Ground y={12650} x0={-600} x1={600} s={s} at={37.8} />
+      <Chart ox={-450} oy={12650} w={W} h={880} prog={fp} />
+      <Tick x={-450 + 0.55 * W} y0={12650} y1={11780} label="$10K" s={s} at={38.2} />
+      <Stat x={-170} y={11800} value={money(fMoney)} caption="EARNED" size={115} s={s} at={38.0} />
+      <Pill x={170} y={11640} text="EACH SALE EASIER" size={34} look="solid" s={s} at={39.3} />
+      <Pawn x={-450 + 0.5 * W} y={12635} h={140} look="ghost" op={fade(s, 46.4)} />
+      <Pill x={-450 + 0.5 * W - 60} y={12330} text="STOPPED AT $9,000" size={30} look="ghost" s={s} at={47.2} />
+      <Caption x={-450 + 0.5 * W - 60} y={12385} text="NEVER SAW THE BEND" s={s} at={48.4} dim size={26} />
 
       {/* H — the machine (0,14700) */}
       <Pill x={0} y={14250} text="NEVER ABOUT THE MONEY" size={30} look="ghost" s={s} at={51.3} out={52.9} />
@@ -119,7 +122,7 @@ const World: React.FC = () => {
       <Caption x={0} y={14850} text="THE MACHINE" s={s} at={53.6} size={28} />
       {s > 54.0 && Array.from({length: 7}, (_, i) => {
         const life = ((s - 54.0) * 0.8 + i / 7) % 1;
-        return <div key={i} style={{position: 'absolute', left: -200 + i * 66, top: 14900 + life * 260, width: 50, height: 50, borderRadius: 25, border: `4px solid ${C.line}`, opacity: Math.sin(life * Math.PI), display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, fontWeight: 800, fontSize: 26, color: '#EDEDED', filter: GLOW}}>$</div>;
+        return <div key={i} style={{position: 'absolute', left: -200 + i * 66, top: 14880 + life * 130, width: 50, height: 50, borderRadius: 25, border: `4px solid ${C.line}`, opacity: Math.sin(life * Math.PI), display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, fontWeight: 800, fontSize: 26, color: '#EDEDED', filter: GLOW}}>$</div>;
       })}
     </>
   );
@@ -127,20 +130,20 @@ const World: React.FC = () => {
 
 // same beats as the horizontal cut, so the whooshes in CUES still land on the moves
 const CAM = [
-  {t: 0, x: -120, y: 180, z: 1.3}, // the slow flat stretch
-  {t: 2.2, x: -110, y: 170, z: 1.33},
+  {t: 0, x: -120, y: 150, z: 1.3}, // the slow flat stretch
+  {t: 2.2, x: -110, y: 140, z: 1.33},
   {t: 2.9, x: 0, y: -60, z: 1.0}, // pull back: the rocket
   {t: 3.7, x: 0, y: -60, z: 1.02},
   {t: 4.4, x: 0, y: 2650, z: 1.12}, // crowd walking, quitting
   {t: 6.2, x: 0, y: 2650, z: 1.16},
   {t: 6.9, x: 0, y: 2300, z: 0.98}, // seesaw + crowd
   {t: 8.5, x: 0, y: 2300, z: 1.02},
-  {t: 9.2, x: 0, y: 4950, z: 1.15}, // you, at zero
-  {t: 10.5, x: 0, y: 4900, z: 1.1},
-  {t: 11.1, x: 0, y: 4760, z: 1.0}, // no skills / customers / proof
-  {t: 14.2, x: 0, y: 4760, z: 1.04},
-  {t: 14.9, x: 0, y: 4860, z: 0.98},
-  {t: 16.0, x: 0, y: 4860, z: 1.0},
+  {t: 9.2, x: 0, y: 4850, z: 1.15}, // you, at zero
+  {t: 10.5, x: 0, y: 4800, z: 1.1},
+  {t: 11.1, x: 0, y: 4700, z: 1.0}, // no skills / customers / proof
+  {t: 14.2, x: 0, y: 4700, z: 1.04},
+  {t: 14.9, x: 0, y: 4760, z: 0.98},
+  {t: 16.0, x: 0, y: 4760, z: 1.0},
   {t: 16.8, x: 0, y: 6950, z: 1.06}, // trust
   {t: 21.4, x: 0, y: 6950, z: 1.1},
   {t: 22.2, x: 0, y: 7230, z: 1.0}, // cards
@@ -151,10 +154,10 @@ const CAM = [
   {t: 29.8, x: -80, y: 7120, z: 1.12},
   {t: 30.5, x: 0, y: 9620, z: 1.0}, // what each sale leaves
   {t: 37.4, x: 0, y: 9640, z: 1.06},
-  {t: 38.1, x: 0, y: 12200, z: 0.98}, // the bend
-  {t: 43.8, x: 0, y: 12200, z: 1.0},
-  {t: 44.6, x: -40, y: 12600, z: 1.3}, // people who stop at 9,000
-  {t: 49.3, x: -40, y: 12600, z: 1.36},
+  {t: 38.1, x: 0, y: 12170, z: 0.98}, // the bend
+  {t: 43.8, x: 0, y: 12170, z: 1.0},
+  {t: 44.6, x: -40, y: 12450, z: 1.3}, // people who stop at 9,000
+  {t: 49.3, x: -40, y: 12450, z: 1.36},
   {t: 50.0, x: 0, y: 14560, z: 1.0},
   {t: 58, x: 0, y: 14560, z: 1.06},
 ];
@@ -173,7 +176,7 @@ export const FirstTenKVertical: React.FC<{music?: 'song' | 'none'; grid?: boolea
       ))}
       <AbsoluteFill style={{opacity: end}}>
         <Backdrop dots={false} />
-        <Camera keys={CAM} cy={0.42} grid={grid}>
+        <Camera keys={CAM} cy={0.38} fit={0.92} grid={grid}>
           <World />
         </Camera>
       </AbsoluteFill>
