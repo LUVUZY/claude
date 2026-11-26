@@ -1,6 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
-import {CryoFigure, POSES} from './CryoFigure';
+import {CryoFigure, POSES, typing} from './CryoFigure';
 import {FONT, FPS, clamp, fr, money, pop, ramp, rand, useSec} from './MaybeLater';
 import grid from './song-grid-3.json';
 
@@ -348,7 +348,7 @@ const SellerSet: React.FC<{x: number; dim?: number; front?: keyof typeof POSES}>
       <Spot x={x - 100} a={1 - dim * 0.7} />
       <Desk x={x + 60} w={460} />
       <Monitor x={x + 120} y={790} w={300} on={1 - dim} />
-      <CryoFigure x={x - 150} y={FLOOR} R={62} front={POSES.type(Math.sin(s * 18) * 3).front} back={null} tilt={5} dim={dim} />
+      <CryoFigure x={x - 150} y={FLOOR} R={62} front={POSES.type(typing(s, x)).front} back={null} tilt={5} dim={dim} />
     </>
   );
 };
@@ -386,7 +386,7 @@ const Buried: React.FC = () => {
       <Desk x={1000} w={440} />
       <Monitor x={1040} y={790} w={280} on={0.8} />
       <Spot x={760} />
-      <CryoFigure x={760} y={FLOOR} R={58} front={POSES.type(Math.sin(s * 18) * 3).front} back={null} tilt={5} />
+      <CryoFigure x={760} y={FLOOR} R={58} front={POSES.type(typing(s, 1)).front} back={null} tilt={5} />
       <div style={{translate: `0 ${heavy * 60}px`}}>
         <Tag x={1040} y={380} text="$99" scale={0.7 + heavy * 0.15} str={150} swing={heavy ? Math.sin(s * 14) * 8 * (1 - ramp(s, 34.5, 35.6)) : 0} />
       </div>
@@ -409,7 +409,7 @@ const Mistake: React.FC = () => {
       <Desk x={540} w={420} />
       <Monitor x={580} y={790} w={260} on={1} />
       <Spot x={330} />
-      <CryoFigure x={330} y={FLOOR} R={56} front={POSES.type(Math.sin(s * 18) * 3).front} back={null} tilt={5} />
+      <CryoFigure x={330} y={FLOOR} R={56} front={POSES.type(typing(s, 1)).front} back={null} tilt={5} />
       <Tag x={580} y={300} text="$99" scale={0.6} str={160} bright={cheap} />
       {PILE.map((b, i) => (s > 37.0 + i * 0.03 ? <Bill key={i} x={b.x} y={b.y} rot={(rand(i) - 0.5) * 6} /> : null))}
       {s > 38.6 && Array.from({length: 9}, (_, i) => <Flame key={i} i={i} x={1200 + i * 75} y={FLOOR - 40 - (i > 1 && i < 7 ? 120 : 40)} s={1 + rand(i) * 0.6} />)}

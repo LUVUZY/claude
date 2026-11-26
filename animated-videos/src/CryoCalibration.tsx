@@ -1,6 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
-import {CryoFigure, POSES} from './CryoFigure';
+import {CryoFigure, POSES, typing} from './CryoFigure';
 
 // Calibration only (not for posting): rebuild cryothum's opening shot to measure how close we can get.
 const FPS = 30;
@@ -52,7 +52,7 @@ const Scene: React.FC = () => {
   const zoom = interpolate(s, [0, 4.3], [1.0, 0.7], {...clamp, easing: Easing.inOut(Easing.cubic)});
   const win = s > 3.3 ? interpolate(s, [3.3, 3.6], [0, 1], clamp) : 0;
   const worth = Math.round(interpolate(s, [0, 4.3], [0, 1], clamp) ** 2.6 * 1009400 + 18142);
-  const typing = Math.sin(s * 18) * 3;
+  const typingAngle = typing(s, 3);
   const cups = Math.floor(interpolate(s, [0.9, 3.0], [0, 6], clamp));
   return (
     <AbsoluteFill style={{background: '#121212'}}>
@@ -90,7 +90,7 @@ const Scene: React.FC = () => {
             return <Bill key={`f${i}`} x={1400 + rand(i + 9) * 1000} y={-650 + life * 1500} rot={life * 400 * (i % 2 ? 1 : -1)} op={1 - life * 0.4} />;
           })}
         {/* the figure: big, close to camera, cut off by the bottom of the frame */}
-        <CryoFigure x={455} y={1085} R={84} front={win > 0.5 ? POSES.cheer.front : POSES.type(typing).front} back={win > 0.5 ? POSES.cheer.back : null} tilt={win > 0.5 ? 0 : 5} headBob={Math.sin(s * 9) * 2} breath={0.5 + 0.5 * Math.sin(s * 3)} ring={false} />
+        <CryoFigure x={455} y={1085} R={84} front={win > 0.5 ? POSES.cheer.front : POSES.type(typingAngle).front} back={win > 0.5 ? POSES.cheer.back : null} tilt={win > 0.5 ? 0 : 5} headBob={Math.sin(s * 9) * 2} breath={0.5 + 0.5 * Math.sin(s * 3)} ring={false} />
         {/* the payoff: arms up, a glowing check on the screen */}
         {win > 0 && (
           <div style={{position: 'absolute', left: 975 - 70, top: 470, width: 140, height: 140, borderRadius: 70, background: '#F2F2F2', opacity: win, scale: `${0.5 + 0.5 * win}`, boxShadow: '0 0 90px rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>

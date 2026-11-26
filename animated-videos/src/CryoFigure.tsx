@@ -8,14 +8,23 @@ import React from 'react';
 // drop: how far below the top of the body the shoulder sits (in head radii). T: thickness in head radii.
 export type Arm = {angle: number; len?: number; from?: number; drop?: number; T?: number};
 
+// Irregular typing motion for a given time and seed (each figure types differently, never a clean loop).
+export const typing = (sec: number, seed = 0) => {
+  const n = (f: number, o: number) => Math.sin(sec * f + seed * 1.7 + o);
+  const burst = Math.max(0, n(1.3, 0) * 0.6 + n(0.47, 2) * 0.5); // typing in bursts, pausing in between
+  const taps = n(17 + (seed % 3), 1) * 2.2 + n(23.7, 4) * 1.2;
+  const lift = Math.max(0, n(0.31, 5) - 0.82) * 40; // now and then the hand comes up off the keys
+  return taps * burst + lift;
+};
+
 // poses that match cryothum's drawings
 export const POSES = {
-  rest: {front: {angle: 10, len: 2.6, from: 0.7, drop: 0.9, T: 0.42}, back: {angle: -10, len: 2.6, from: 0.7, drop: 0.9, T: 0.42}},
-  type: (wiggle = 0) => ({front: {angle: 99 + wiggle, len: 4.0, from: 0.0, drop: 0.36, T: 0.68}, back: null}),
-  cheer: {front: {angle: 158, len: 2.8, from: 0.62, drop: 0.35, T: 0.4}, back: {angle: -158, len: 2.8, from: 0.62, drop: 0.35, T: 0.4}},
-  point: {front: {angle: 80, len: 3.4, from: 0.35, drop: 0.5, T: 0.45}, back: null},
-  hold: {front: {angle: 140, len: 2.3, from: 0.6, drop: 0.5, T: 0.42}, back: null},
-  shrug: {front: {angle: 60, len: 2.3, from: 0.75, drop: 0.7, T: 0.4}, back: {angle: -60, len: 2.3, from: 0.75, drop: 0.7, T: 0.4}},
+  rest: {front: {angle: 9, len: 3.0, from: 0.7, drop: 0.85, T: 0.55}, back: {angle: -9, len: 3.0, from: 0.7, drop: 0.85, T: 0.55}},
+  type: (wiggle = 0) => ({front: {angle: 99 + wiggle, len: 4.0, from: 0.0, drop: 0.36, T: 0.74}, back: null}),
+  cheer: {front: {angle: 156, len: 3.0, from: 0.62, drop: 0.35, T: 0.52}, back: {angle: -156, len: 3.0, from: 0.62, drop: 0.35, T: 0.52}},
+  point: {front: {angle: 82, len: 3.6, from: 0.35, drop: 0.5, T: 0.56}, back: null},
+  hold: {front: {angle: 140, len: 2.6, from: 0.6, drop: 0.5, T: 0.55}, back: null},
+  shrug: {front: {angle: 62, len: 2.7, from: 0.75, drop: 0.7, T: 0.52}, back: {angle: -62, len: 2.7, from: 0.75, drop: 0.7, T: 0.52}},
 } as const;
 
 export const CryoFigure: React.FC<{
@@ -41,7 +50,7 @@ export const CryoFigure: React.FC<{
   const id = `g${Math.round(x)}${Math.round(y)}${Math.round(R)}`;
   const arm = (a: Arm, side: 1 | -1, key: string, isFront: boolean) => {
     const len = (a.len ?? 3.0) * R;
-    const T = (a.T ?? 0.7) * R;
+    const T = Math.max(9, (a.T ?? 0.7) * R);
     const sx = side * (a.from ?? 0.6) * (bodyW / 2);
     const sy = -bodyH + (a.drop ?? 0.6) * R;
     return (

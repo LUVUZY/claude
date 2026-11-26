@@ -1,6 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
-import {CryoFigure, POSES} from './CryoFigure';
+import {CryoFigure, POSES, typing} from './CryoFigure';
 import {FONT, FPS, clamp, fr, money, pop, ramp, rand, useSec} from './MaybeLater';
 import {Card, Cup, FLOOR, Floor, G, Glow, Monitor, Spot, Desk} from './NextTo';
 import grid from './song-grid-5.json';
@@ -99,7 +99,7 @@ const Hook: React.FC = () => {
           const life = ((s - 1.4) * 0.75 + rand(i)) % 1;
           return <Money key={`f${i}`} x={1400 + rand(i + 9) * 1000} y={-650 + life * 1500} rot={life * 400 * (i % 2 ? 1 : -1)} op={1 - life * 0.4} />;
         })}
-        <CryoFigure x={455} y={1085} R={84} front={win > 0.5 ? POSES.cheer.front : POSES.type(Math.sin(s * 18) * 3).front} back={win > 0.5 ? POSES.cheer.back : null} tilt={win > 0.5 ? 0 : 5} headBob={Math.sin(s * 9) * 2} />
+        <CryoFigure x={455} y={1085} R={84} front={win > 0.5 ? POSES.cheer.front : POSES.type(typing(s, 1)).front} back={win > 0.5 ? POSES.cheer.back : null} tilt={win > 0.5 ? 0 : 5} headBob={Math.sin(s * 9) * 2} />
         <div style={{position: 'absolute', left: -2000, right: -2000, top: 1075, height: 3, backgroundImage: 'linear-gradient(90deg, rgba(220,220,220,0.5) 55%, transparent 55%)', backgroundSize: '26px 3px'}} />
       </AbsoluteFill>
       <TopCounter label="SALES" value={money(interpolate(s, [0, 3.6], [0, 1], clamp) ** 2.6 * 1004083 + 18142)} x={interpolate(s, [0, 3.7], [975, 640], {...clamp, easing: Easing.inOut(Easing.cubic)})} size={136} />
@@ -148,7 +148,7 @@ const Seller: React.FC<{x: number; R?: number; screen?: React.ReactNode; dim?: n
       <Spot x={x - 110} a={1 - dim * 0.7} />
       <Desk x={x + 70} w={480} />
       <Monitor x={x + 130} y={790} w={320} on={1 - dim}>{screen}</Monitor>
-      <CryoFigure x={x - 130} y={FLOOR} R={R} front={POSES.type(Math.sin(s * 18 + x) * 3).front} back={null} tilt={5} dim={dim} />
+      <CryoFigure x={x - 130} y={FLOOR} R={R} front={POSES.type(typing(s, x)).front} back={null} tilt={5} dim={dim} />
     </>
   );
 };
@@ -185,7 +185,7 @@ const Product: React.FC = () => {
           {features.map((t, i) => (s > t ? <div key={i} style={{marginTop: 6, fontSize: 22, fontWeight: 800, opacity: pop(s, t)}}>+ NEW FEATURE</div> : null))}
         </div>
       </Monitor>
-      <CryoFigure x={600} y={FLOOR} R={80} front={slump > 0.5 ? POSES.rest.front : POSES.type(Math.sin(s * 22) * 4).front} back={slump > 0.5 ? POSES.rest.back : null} tilt={slump > 0.5 ? 14 : 5} dim={slump * 0.6} />
+      <CryoFigure x={600} y={FLOOR} R={80} front={slump > 0.5 ? POSES.rest.front : POSES.type(typing(s, 7) * 1.4).front} back={slump > 0.5 ? POSES.rest.back : null} tilt={slump > 0.5 ? 14 : 5} dim={slump * 0.6} />
       {/* weeks with no sale */}
       {[16.4, 17.08, 17.82].map((t, i) => (s > t ? <div key={i} style={{position: 'absolute', left: 1460 + i * 100, top: 170, width: 76, height: 76, borderRadius: 38, border: `4px solid ${G}`, color: G, fontFamily: FONT, fontWeight: 900, fontSize: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: pop(s, t)}}>✕</div> : null))}
       {/* motivation battery */}
