@@ -15,6 +15,7 @@ import {LineStyleTest, LINE_TEST_FRAMES} from './LineStyleTest';
 import {LessTime, LESS_TIME_FRAMES} from './LessTime';
 import {Decoy, DECOY_FRAMES} from './Decoy';
 import {TwoMillionaires, TWO_MIL_FRAMES} from './TwoMillionaires';
+import {FirstTenK, FIRST_10K_FRAMES} from './FirstTenK';
 import {WhoTheyBecome, WTB_FRAMES} from './WhoTheyBecome';
 
 export const RemotionRoot: React.FC = () => (
@@ -40,6 +41,8 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="ThirdBuyerMusicReady" component={ThirdBuyer} defaultProps={{music: 'none' as const}} durationInFrames={THIRD_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="WhoTheyBecome" component={WhoTheyBecome} durationInFrames={WTB_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="WhoTheyBecomeMusicReady" component={WhoTheyBecome} defaultProps={{music: 'none' as const}} durationInFrames={WTB_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="FirstTenK" component={FirstTenK} durationInFrames={FIRST_10K_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="FirstTenKMusicReady" component={FirstTenK} defaultProps={{music: 'none' as const}} durationInFrames={FIRST_10K_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="TwoMillionaires" component={TwoMillionaires} durationInFrames={TWO_MIL_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="TwoMillionairesMusicReady" component={TwoMillionaires} defaultProps={{music: 'none' as const}} durationInFrames={TWO_MIL_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="Decoy" component={Decoy} durationInFrames={DECOY_FRAMES} fps={30} width={1920} height={1080} />
