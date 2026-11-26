@@ -1,6 +1,5 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
-import {CameraMotionBlur} from '@remotion/motion-blur';
 import {CryoFigure, POSES} from './CryoFigure';
 import {FONT, FPS, clamp, fr, money, pop, ramp, rand, useSec} from './MaybeLater';
 import grid from './song-grid-3.json';
@@ -29,8 +28,11 @@ const Floor: React.FC = () => (
 const Glow: React.FC<{x: number; y: number; r?: number; a?: number}> = ({x, y, r = 450, a = 0.12}) => (
   <div style={{position: 'absolute', left: x - r, top: y - r, width: r * 2, height: r * 2, borderRadius: r, background: `radial-gradient(circle, rgba(255,255,255,${a}) 0%, rgba(255,255,255,${a * 0.3}) 40%, transparent 70%)`}} />
 );
-const Spot: React.FC<{x: number; w?: number; a?: number}> = ({x, w = 620, a = 1}) => (
-  <div style={{position: 'absolute', left: x - w / 2, top: 0, width: w, height: FLOOR + 20, background: `linear-gradient(180deg, transparent, rgba(255,255,255,${0.05 * a}))`, clipPath: 'polygon(42% 0, 58% 0, 100% 100%, 0 100%)', filter: 'blur(22px)'}} />
+const Spot: React.FC<{x: number; w?: number; a?: number}> = ({x, w = 560, a = 1}) => (
+  <>
+    <div style={{position: 'absolute', left: x - w / 2, top: -40, width: w, height: FLOOR + 60, background: `linear-gradient(180deg, rgba(255,255,255,${0.02 * a}) 0%, rgba(255,255,255,${0.13 * a}) 100%)`, clipPath: 'polygon(40% 0, 60% 0, 100% 100%, 0 100%)', filter: 'blur(18px)'}} />
+    <div style={{position: 'absolute', left: x - w * 0.6, top: FLOOR - 70, width: w * 1.2, height: 140, borderRadius: '50%', background: `radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,255,255,${0.2 * a}) 0%, transparent 70%)`}} />
+  </>
 );
 const Counter: React.FC<{x: number; y: number; label: string; value: string; size?: number; at?: number; dim?: boolean}> = ({x, y, label, value, size = 100, at = -9, dim}) => {
   const s = useSec();
@@ -139,26 +141,25 @@ const Label: React.FC<{x: number; y: number; text: string; at?: number; size?: n
   return <div style={{position: 'absolute', left: x - 300, width: 600, top: y, textAlign: 'center', fontFamily: FONT, fontWeight: 800, fontSize: size, letterSpacing: 5, color: dim ? '#6A6A6A' : '#BDBDBD', opacity: pop(s, at, 14)}}>{text}</div>;
 };
 
-// ---------- shots ----------
-const WHIP = 0.26;
-const ShotInner: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]; origin?: string}> = ({start, end, children, zoom, origin = '50% 70%'}) => {
+// ---------- shots: cryothum-style zoom/blur crossfade + slow drift ----------
+const T = 0.34; // transition length (s)
+const ShotInner: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]; origin?: string; first?: boolean; last?: boolean}> = ({start, end, children, zoom, origin = '50% 70%', first, last}) => {
   const s = useSec();
-  const enter = ramp(s, start - WHIP, start + WHIP, 1, 0, Easing.out(Easing.cubic));
-  const exit = ramp(s, end - WHIP, end + WHIP, 0, 1, Easing.in(Easing.cubic));
-  const z = zoom ? interpolate(s, [start, end], zoom, {...clamp, easing: Easing.inOut(Easing.quad)}) : 1;
-  return <AbsoluteFill style={{translate: `${(enter - exit) * 2100}px 0`, scale: `${z}`, transformOrigin: origin}}>{children}</AbsoluteFill>;
-};
-const Shot: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]; origin?: string; first?: boolean; last?: boolean}> = ({start, end, children, zoom, origin, first, last}) => {
-  const frame = useCurrentFrame();
-  const s = frame / FPS;
-  if (frame < (first ? 0 : fr(start - WHIP)) || frame >= (last ? NEXT_TO_FRAMES : fr(end + WHIP))) return null;
-  const inner = (
-    <ShotInner start={first ? -10 : start} end={last ? 999 : end} zoom={zoom} origin={origin}>
+  const pin = first ? 1 : ramp(s, start - T / 2, start + T / 2, 0, 1, Easing.out(Easing.cubic));
+  const pout = last ? 0 : ramp(s, end - T / 2, end + T / 2, 0, 1, Easing.in(Easing.cubic));
+  const drift = zoom ? interpolate(s, [start, end], zoom, {...clamp, easing: Easing.inOut(Easing.sin)}) : 1;
+  const sc = drift * (1 + 0.14 * (1 - pin)) * (1 + 0.22 * pout);
+  const blur = 16 * (1 - pin) + 18 * pout;
+  return (
+    <AbsoluteFill style={{scale: `${sc}`, transformOrigin: origin, opacity: Math.min(pin, 1 - pout), filter: blur > 0.3 ? `blur(${blur}px)` : undefined}}>
       {children}
-    </ShotInner>
+    </AbsoluteFill>
   );
-  const whip = (!first && Math.abs(s - start) < WHIP) || (!last && Math.abs(s - end) < WHIP);
-  return whip ? <CameraMotionBlur shutterAngle={300} samples={8}>{inner}</CameraMotionBlur> : inner;
+};
+const Shot: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]; origin?: string; first?: boolean; last?: boolean}> = (p) => {
+  const frame = useCurrentFrame();
+  if (frame < (p.first ? 0 : fr(p.start - T / 2)) || frame >= (p.last ? NEXT_TO_FRAMES : fr(p.end + T / 2))) return null;
+  return <ShotInner {...p} />;
 };
 
 // ---------- scenes ----------
@@ -180,6 +181,7 @@ const Hook: React.FC = () => {
       </div>
       {/* register */}
       <div style={{position: 'absolute', left: 900, top: 560, width: 220, height: 130, borderRadius: 12, border: `5px solid ${G}`, background: paid ? `rgba(255,255,255,${0.1 + 0.2 * paid})` : 'rgba(20,20,20,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 64, color: '#E8E8E8', boxShadow: paid ? `0 0 ${60 * paid}px rgba(255,255,255,0.4)` : undefined}}>{paid > 0.5 ? '✓' : '$6'}</div>
+      <Spot x={560} />
       <CryoFigure x={560} y={FLOOR} R={78} front={paid > 0.3 ? POSES.hold.front : POSES.point.front} back={POSES.rest.back}>
         {paid > 0.3 && (
           <g transform="translate(0 10)">
@@ -197,6 +199,7 @@ const Hook: React.FC = () => {
       {[0, 1, 2, 3].map((i) => (s > 1.4 + i * 0.3 ? <Cup key={i} x={1340 + (i - 1.5) * 70} y={690} s={0.8} steam /> : null))}
       {/* --- the app (right screen) --- */}
       <Glow x={1920 + 900} y={520} r={520} a={0.16} />
+      <Spot x={1920 + 560} />
       <CryoFigure x={1920 + 520} y={FLOOR} R={82} front={POSES.hold.front} back={POSES.rest.back} tilt={-3} />
       <Phone x={1920 + 760} y={470} h={360} rot={6}>
         <div style={{padding: 22, fontFamily: FONT, color: '#E6E6E6'}}>
@@ -261,6 +264,7 @@ const Shortcut: React.FC = () => {
   return (
     <AbsoluteFill>
       <Glow x={700} y={480} r={420} a={0.18} />
+      <Spot x={420} />
       <CryoFigure x={420} y={FLOOR} R={84} front={s > 10.4 ? POSES.point.front : POSES.rest.front} back={POSES.rest.back} />
       {/* the thinking light in the head */}
       <Glow x={420} y={FLOOR - 84 * 3.7 - 84 * 1.28} r={110} a={0.25 + 0.2 * Math.sin(s * 6)} />
@@ -329,6 +333,7 @@ const AppGrid: React.FC = () => {
           })}
         </div>
       </Phone>
+      <Spot x={330} />
       <CryoFigure x={330} y={FLOOR} R={72} front={POSES.shrug.front} back={POSES.shrug.back} />
       <Label x={1560} y={460} text="A LOT" at={22.9} size={40} />
     </AbsoluteFill>
@@ -340,6 +345,7 @@ const SellerSet: React.FC<{x: number; dim?: number; front?: keyof typeof POSES}>
   const s = useSec();
   return (
     <>
+      <Spot x={x - 100} a={1 - dim * 0.7} />
       <Desk x={x + 60} w={460} />
       <Monitor x={x + 120} y={790} w={300} on={1 - dim} />
       <CryoFigure x={x - 150} y={FLOOR} R={62} front={POSES.type(Math.sin(s * 18) * 3).front} back={null} tilt={5} dim={dim} />
@@ -379,6 +385,7 @@ const Buried: React.FC = () => {
       })}
       <Desk x={1000} w={440} />
       <Monitor x={1040} y={790} w={280} on={0.8} />
+      <Spot x={760} />
       <CryoFigure x={760} y={FLOOR} R={58} front={POSES.type(Math.sin(s * 18) * 3).front} back={null} tilt={5} />
       <div style={{translate: `0 ${heavy * 60}px`}}>
         <Tag x={1040} y={380} text="$99" scale={0.7 + heavy * 0.15} str={150} swing={heavy ? Math.sin(s * 14) * 8 * (1 - ramp(s, 34.5, 35.6)) : 0} />
@@ -401,6 +408,7 @@ const Mistake: React.FC = () => {
       <Glow x={1460} y={720} r={560} a={0.26 + 0.05 * Math.sin(s * 11)} />
       <Desk x={540} w={420} />
       <Monitor x={580} y={790} w={260} on={1} />
+      <Spot x={330} />
       <CryoFigure x={330} y={FLOOR} R={56} front={POSES.type(Math.sin(s * 18) * 3).front} back={null} tilt={5} />
       <Tag x={580} y={300} text="$99" scale={0.6} str={160} bright={cheap} />
       {PILE.map((b, i) => (s > 37.0 + i * 0.03 ? <Bill key={i} x={b.x} y={b.y} rot={(rand(i) - 0.5) * 6} /> : null))}
@@ -460,7 +468,7 @@ const Honest: React.FC = () => {
       {s > 52.1 && <div style={{position: 'absolute', left: 950, top: 800, width: 420, textAlign: 'center', fontFamily: FONT, fontWeight: 800, fontSize: 28, letterSpacing: 6, color: '#9A9A9A', opacity: pop(s, 52.1)}}>CARDBOARD</div>}
       {[1500, 1660, 1820].map((x, i) => (
         <React.Fragment key={x}>
-          <CryoFigure x={x + leave * 500} y={FLOOR} R={44} front={angry > 0.5 && leave < 0.1 ? POSES.cheer.front : POSES.rest.front} back={angry > 0.5 && leave < 0.1 ? POSES.cheer.back : POSES.rest.back} facing={leave > 0 ? 1 : -1} dim={leave * 0.6} />
+          <CryoFigure x={x + leave * 500} y={FLOOR} R={44} front={angry > 0.5 && leave < 0.1 ? POSES.shrug.front : POSES.rest.front} back={angry > 0.5 && leave < 0.1 ? POSES.shrug.back : POSES.rest.back} facing={leave > 0 ? 1 : -1} dim={leave * 0.6} />
           {angry > 0 && leave < 0.6 && <div style={{position: 'absolute', left: x - 18, top: FLOOR - 330, fontFamily: FONT, fontWeight: 900, fontSize: 90, color: '#E6E6E6', opacity: angry * (1 - leave * 1.6), filter: 'drop-shadow(0 0 14px rgba(255,255,255,0.5))'}}>!</div>}
         </React.Fragment>
       ))}
@@ -578,7 +586,7 @@ export const NextTo: React.FC<{music?: 'song' | 'none'}> = ({music = 'song'}) =>
     </AbsoluteFill>
   );
   return (
-    <AbsoluteFill style={{background: '#121212'}}>
+    <AbsoluteFill style={{background: '#050505'}}>
       <Audio src={staticFile('vo3/voiceover.wav')} />
       {music === 'song' && <Audio src={staticFile('music/song-bed-3.wav')} volume={0.42} />}
       {CUES.map((c, i) => (
@@ -587,11 +595,11 @@ export const NextTo: React.FC<{music?: 'song' | 'none'}> = ({music = 'song'}) =>
         </Sequence>
       ))}
       <AbsoluteFill style={{opacity: fade}}>
-        <AbsoluteFill style={{backgroundImage: 'radial-gradient(rgba(255,255,255,0.07) 1.4px, transparent 1.6px)', backgroundSize: '38px 38px'}} />
-        <AbsoluteFill style={{filter: `blur(0.6px) brightness(${1 + bp * 0.08})`}}>{world}</AbsoluteFill>
+        <AbsoluteFill style={{backgroundImage: 'radial-gradient(rgba(255,255,255,0.045) 1.4px, transparent 1.6px)', backgroundSize: '38px 38px'}} />
+        <AbsoluteFill style={{filter: `blur(0.5px) contrast(1.18) brightness(${0.95 + bp * 0.08})`}}>{world}</AbsoluteFill>
         {/* bloom pass */}
         <AbsoluteFill style={{filter: 'blur(16px) brightness(1.3)', opacity: 0.45, mixBlendMode: 'screen'}}>{world}</AbsoluteFill>
-        <AbsoluteFill style={{background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, rgba(0,0,0,0.6) 100%)'}} />
+        <AbsoluteFill style={{background: 'radial-gradient(ellipse 75% 75% at 50% 50%, transparent 45%, rgba(0,0,0,0.78) 100%)'}} />
       </AbsoluteFill>
     </AbsoluteFill>
   );

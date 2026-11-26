@@ -10,12 +10,12 @@ export type Arm = {angle: number; len?: number; from?: number; drop?: number; T?
 
 // poses that match cryothum's drawings
 export const POSES = {
-  rest: {front: {angle: 10, len: 2.6, from: 0.7, drop: 0.9, T: 0.62}, back: {angle: -10, len: 2.6, from: 0.7, drop: 0.9, T: 0.62}},
-  type: (wiggle = 0) => ({front: {angle: 99 + wiggle, len: 4.0, from: 0.0, drop: 0.36, T: 0.95}, back: null}),
-  cheer: {front: {angle: 158, len: 2.7, from: 0.62, drop: 0.35, T: 0.6}, back: {angle: -158, len: 2.7, from: 0.62, drop: 0.35, T: 0.6}},
-  point: {front: {angle: 80, len: 3.4, from: 0.35, drop: 0.5, T: 0.7}, back: null},
-  hold: {front: {angle: 140, len: 2.2, from: 0.6, drop: 0.5, T: 0.62}, back: null},
-  shrug: {front: {angle: 60, len: 2.2, from: 0.75, drop: 0.7, T: 0.6}, back: {angle: -60, len: 2.2, from: 0.75, drop: 0.7, T: 0.6}},
+  rest: {front: {angle: 10, len: 2.6, from: 0.7, drop: 0.9, T: 0.42}, back: {angle: -10, len: 2.6, from: 0.7, drop: 0.9, T: 0.42}},
+  type: (wiggle = 0) => ({front: {angle: 99 + wiggle, len: 4.0, from: 0.0, drop: 0.36, T: 0.68}, back: null}),
+  cheer: {front: {angle: 158, len: 2.8, from: 0.62, drop: 0.35, T: 0.4}, back: {angle: -158, len: 2.8, from: 0.62, drop: 0.35, T: 0.4}},
+  point: {front: {angle: 80, len: 3.4, from: 0.35, drop: 0.5, T: 0.45}, back: null},
+  hold: {front: {angle: 140, len: 2.3, from: 0.6, drop: 0.5, T: 0.42}, back: null},
+  shrug: {front: {angle: 60, len: 2.3, from: 0.75, drop: 0.7, T: 0.4}, back: {angle: -60, len: 2.3, from: 0.75, drop: 0.7, T: 0.4}},
 } as const;
 
 export const CryoFigure: React.FC<{
