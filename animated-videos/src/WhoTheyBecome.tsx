@@ -125,7 +125,7 @@ const Hook: React.FC = () => {
       <AbsoluteFill style={{scale: `${zoom}`, transformOrigin: '35% 85%'}}>
         <Beam x={520} w={520} a={0.6 + lit} />
         {/* mirror */}
-        <div style={{position: 'absolute', left: 640, top: 330, width: 400, height: FLOOR - 340, borderRadius: '200px 200px 10px 10px', border: `6px solid ${G}`, background: `rgba(255,255,255,${0.03 + 0.1 * lit})`, boxShadow: `0 0 ${60 * lit}px rgba(255,255,255,${0.35 * lit})`}} />
+        <div style={{position: 'absolute', left: 640, top: 430, width: 400, height: FLOOR - 440, borderRadius: '200px 200px 10px 10px', border: `6px solid ${G}`, background: `rgba(255,255,255,${0.03 + 0.1 * lit})`, boxShadow: `0 0 ${60 * lit}px rgba(255,255,255,${0.35 * lit})`}} />
         <Glow x={840} y={620} r={260} a={0.25 * lit} />
         <div style={{opacity: lit}}>
           <P x={840} R={46} pose={s > 2.6 ? 'cheer' : 'rest'} />
