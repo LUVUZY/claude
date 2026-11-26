@@ -8,6 +8,7 @@ import {CheapRiskWide, WIDE_FRAMES} from './CheapRiskWide';
 import {CryoCalibration} from './CryoCalibration';
 import {NextTo, NEXT_TO_FRAMES} from './NextTo';
 import {HookV2, HOOK_V2_FRAMES} from './HookV2';
+import {ObsessBuyer, OBSESS_FRAMES} from './ObsessBuyer';
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -26,5 +27,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="NextTo" component={NextTo} durationInFrames={NEXT_TO_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="NextToMusicReady" component={NextTo} defaultProps={{music: 'none' as const}} durationInFrames={NEXT_TO_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="HookV2" component={HookV2} durationInFrames={HOOK_V2_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="ObsessBuyer" component={ObsessBuyer} durationInFrames={OBSESS_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="ObsessBuyerMusicReady" component={ObsessBuyer} defaultProps={{music: 'none' as const}} durationInFrames={OBSESS_FRAMES} fps={30} width={1920} height={1080} />
   </>
 );
