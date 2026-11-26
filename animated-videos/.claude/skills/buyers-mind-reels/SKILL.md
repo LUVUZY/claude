@@ -109,7 +109,16 @@ shoulders; use the `POSES` presets (`rest`, `type`, `cheer`, `point`, `hold`, `s
    (bloom doubles render time: ~30–40 min for 60 s at 1920×1080 on this machine).
 6. Check the full render (contact sheet + a strip of transitions) before sending.
 
-## 7. Quality checklist (each was a real complaint)
+## 7. Delivering
+
+Every time a video is sent to the owner, include a ready-to-paste **TikTok caption** with it (they upload straight away):
+- Line 1: the hook idea with searchable words (TikTok search works like Google), one emoji.
+- A question that invites comments, ending in 👇.
+- 4–5 hashtags, broad + niche (e.g. #entrepreneur #salespsychology #smallbusinesstips #businesstips #makemoneyonline).
+- No toolkit pitch in the caption; suggest a pinned comment instead (e.g. "Comment BUYER and I'll send you …").
+Also say which file to post (music-ready + song added in-app at ≈1:48 is the safer choice).
+
+## 8. Quality checklist (each was a real complaint)
 
 - [ ] Hook shows the payoff/spectacle in frame 1, no empty axes.
 - [ ] No scene sits still for more than ~1.5 s.
