@@ -42,7 +42,7 @@ export const ShotInner: React.FC<{start: number; end: number; children: React.Re
   const exit = ramp(s, end - WHIP, end + WHIP, 0, 1, Easing.in(Easing.cubic));
   const x = (enter - exit) * 1150;
   const z = zoom ? interpolate(s, [start, end], zoom, clamp) : 1;
-  return <AbsoluteFill style={{translate: `${x}px 0`, scale: z}}>{children}</AbsoluteFill>;
+  return <AbsoluteFill style={{translate: `${x}px 0`, scale: `${z}`}}>{children}</AbsoluteFill>;
 };
 
 export const Shot: React.FC<{start: number; end: number; children: React.ReactNode; zoom?: [number, number]; first?: boolean; last?: boolean; total?: number}> = ({

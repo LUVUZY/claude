@@ -5,6 +5,7 @@ import {TwoSellers, TWO_SELLERS_FRAMES} from './TwoSellers';
 import {MaybeLater, MAYBE_LATER_FRAMES} from './MaybeLater';
 import {CheapRisk, CHEAP_RISK_FRAMES} from './CheapRisk';
 import {CheapRiskWide, WIDE_FRAMES} from './CheapRiskWide';
+import {CryoCalibration} from './CryoCalibration';
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -19,5 +20,6 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="CheapRiskMusicReady" component={CheapRisk} defaultProps={{music: 'none' as const}} durationInFrames={CHEAP_RISK_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="CheapRiskWide" component={CheapRiskWide} durationInFrames={WIDE_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="CheapRiskWideMusicReady" component={CheapRiskWide} defaultProps={{music: 'none' as const}} durationInFrames={WIDE_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="CryoCalibration" component={CryoCalibration} durationInFrames={130} fps={30} width={1920} height={1080} />
   </>
 );
