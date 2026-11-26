@@ -1,12 +1,73 @@
 ---
 name: buyers-mind-reels
-description: Make a monochrome animated explainer reel for The Buyers Mind in the cryothum-style format (Remotion + Inworld voice + Whisper timing + beat-synced music). Use when asked to make, script, or fix a Buyers Mind animated video.
+description: Make a monochrome animated explainer reel for The Buyers Mind, in the premium thin-line style (default) or the cryothum figure style (Remotion + Inworld voice + Whisper timing + beat-synced music). Use when asked to make, script, or fix a Buyers Mind animated video.
 ---
 
 # Buyers Mind reels: the house style
 
 Everything here was measured from 18 reference videos by a creator who gets thousands of likes on fresh accounts with
 this exact format. Follow it literally. Deviating from it is what made earlier attempts look "mid".
+
+## 0. Which style (read first)
+
+The owner's direction (Nov 2026): **the premium thin-line style is the default** — "these are high quality animations,
+we should be like that." Use the cryothum figure style (sections 2–4 below) only when asked for it.
+The script formula (section 1), voice, Whisper timing, captions and delivering rules apply to both.
+
+### Premium line style (default) — measured from @cps_user and @krynoth_11 (6 videos)
+
+**Kit:** `src/LineKit.tsx` (all pieces below) and `src/LineStyleTest.tsx` (a working 15 s example). Build every new
+video from the kit; add to the kit instead of drawing one-offs.
+
+**Look**
+- Pure black `#000`, a barely visible dot grid, a very soft lift in the centre and a vignette. Mid brightness p50 ≈ 2
+  (much darker than cryothum's haze); no bloom pass. Glow comes from `drop-shadow` on the white strokes (`GLOW`).
+- Everything is thin white line art, stroke ≈ 4–5 px at 1080p, round caps/joins. Active = white + glow;
+  inactive/past = grey `#6E6E6E` without glow; gauge tracks `#2E2E2E`.
+- Figure = `Pawn`: round head over an arch body, **no arms, no legs**. Three looks: `hero` (filled white, glowing),
+  `line` (outline), `ghost` (grey outline, the crowd). Optional graduation cap or tie for identity.
+  The point of a scene is usually *one hero among ghosts* (spotlight, brightness, or a pill above them).
+- Type: Inter 800, uppercase, wide letter-spacing (0.14em on pills, ~0.32em on small captions).
+  `Pill` (outlined, or solid white with black text for the key phrase; old phrases turn `ghost`), `Bubble`
+  (white speech bubble, black text), `Stat` (huge number + small spaced caption), `Caption` under icons,
+  `WordBox` (outlined or white card with one bold word).
+- Data pieces: `Ring` gauge (grey track, white arc, counting %), `Bars` (white bars growing, values counting),
+  `Trend` (line that draws itself; `rider` puts a hero pawn on the tip), `Rows` (account-balance table),
+  `DotField` (a crowd of millions, one dot lit).
+- Icons: `Icon` draws itself on (school, building, doc, cert, briefcase, globe, bell, shield, bank, phone, search,
+  door, question, arrow, network, cart, box, tag, coin, eye, chat, star, lock, chart). Add new ones to `ICONS`.
+- Symbols for argument: a big `Cross` drawn over the wrong idea (two strokes), a dashed `Ground` line, a soft
+  `Spot` cone on the hero, seesaws/scales, ladders, doors multiplying, `=` between two equal pawns.
+
+**Motion (the part that makes it feel premium)**
+- **One continuous world, not cuts.** Lay scenes out side by side / stacked on one big canvas and move a `Camera`
+  between them (`CamKey[]`): hold, then glide 0.35–0.8 s with ease-in-out and slight motion blur. Typical moves:
+  pan sideways to the next idea; **pull back to reveal more** (2 doors → 4 doors, 1 pawn → a crowd);
+  push in on the hero. Camera drifts ±1 % while holding.
+- New element every ~1–3 s, in sync with the word. Entrances are calm: fade + 14 px rise, pills pop with a soft
+  spring, lines and icons draw themselves on, numbers count up. Nothing bounces wildly.
+- Replace, don't stack: when the idea changes, the old label turns ghost/grey (or gets a `Cross`) and the new one
+  appears solid next to it.
+- Measured: @cps_user ≈ 11–22 picture changes/min, motion ≈ 2.4–2.7, active ≈ 35–49 %. @krynoth_11 is slower and
+  sparser (1–5 % active): fewer, smaller elements, lots of empty black. Aim for the @cps_user pace.
+- Layout keeps the TikTok-safe zone: important things in the middle 70 % of the height, nothing key bottom-right.
+
+**Script differences vs cryothum**
+- Same formula (hook → common belief → mechanism → payoff → caveat → flip), 135–170 words, **~145–150 wpm**
+  (55–70 s), calmer read.
+- **Cite real, named sources** for the key numbers: "the Bank of England said in a 2014 report…",
+  "Kahneman and Tversky found…", "a study of 2.7 million founders…". Only use a source you can actually name and
+  that says what you claim. If there's no real number, use a pill/word instead of a stat — never invent one.
+- Reference hooks: "School was built to make good employees, not rich people." · "A master's degree is the new
+  bachelor's." · "The most popular degree in Europe is business. That's exactly the problem." · "Where does money
+  come from?" · "Staying calm helps you build wealth." · "If you're between 17 and 24, you have two choices."
+- Closing line flips the hook: "Fear does not make you poor. Reacting to it does." · "School made you an employee.
+  What you do next decides if you stay one." · "When everyone climbs the same ladder, the ladder stops being the advantage."
+
+**Music for this style:** the owner's second clip (an instrumental, ~62 BPM, beat ≈ 0.97 s; the clip was filmed
+IRL and is only used for its audio). Saved outside git at `scratchpad/song/song2.wav`. Its loud section runs for the
+first ~45 s with short dips around 16 s, 30 s and 39 s, then it goes quiet. Song name unknown: ask the owner
+for it when posting so it can be added in-app.
 
 ## 1. Script formula (150–170 words, 60–75 s spoken)
 
@@ -40,7 +101,7 @@ people who are too busy to notice it."
 Topic rule: money-adjacent and buyer-psychology. Every claim must be true; no invented statistics.
 Facts that are real and safe: the wine price experiment (people rated the same wine better when told it cost more).
 
-## 2. Visual formula
+## 2. Visual formula (cryothum figure style)
 
 - **Opening = payoff first.** A big money counter climbs (e.g. a SALES counter running from 18,142 to over a million dollars) over a spectacle shot:
   money piling up, camera pulling out to reveal it, character ends arms-up. Then the video explains how.
