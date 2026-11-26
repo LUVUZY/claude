@@ -97,7 +97,11 @@ shoulders; use the `POSES` presets (`rest`, `type`, `cheer`, `point`, `hold`, `s
   ducked under the voice. Song files and renders that contain it stay out of git (copyright). For posting, prefer the
   music-ready render + the song added in-app (start ≈1:48 so the drop lands after the hook).
 - Visual beat pulse: tiny scale/brightness bump on each beat between drop and strip.
-- SFX: real CC0 sounds in `public/sfx-real/` (pops on reveals, ticks on counters, chimes on wins, thuds on impacts), quiet.
+- SFX (measured on the reference: ~2 accents/min, dull ~800 Hz, gone in ~0.13 s). Use the soft palette in
+  `public/sfx-soft/` (built by `scripts/make_soft_sfx.py`): `whoosh` under every cut (vol ~0.2), plus **8–10 accents
+  per video total** on key beats only: `coins` (payoff), `riser` into the drop, one `chime` for the big win, `pop`
+  for reveals, `thud` for punchlines/closing line, `tick` rarely. Never: rapid repeated rows (ticks per counter step,
+  coin per bill), arcade/8-bit sounds, error buzzers, bright UI clicks. The old `public/sfx-real/` set sounded cheap ("mid").
 
 ## 6. Pipeline
 

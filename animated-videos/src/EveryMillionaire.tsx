@@ -439,28 +439,20 @@ const Ending: React.FC = () => {
 
 // ---------- sound ----------
 type Cue = {t: number; src: string; vol?: number};
-const SFX = (n: string) => `sfx-real/${n}.mp3`;
+const SFX = (n: string) => `sfx-soft/${n}.wav`;
+// Reference: ~2 accents/min, dull (~800 Hz) and short (~0.13 s). Whooshes sit under the cuts, accents only on key beats.
 const CUES: Cue[] = [
-  ...CUTS.map((t) => ({t: t - 0.2, src: 'sfx/whoosh.wav', vol: 0.4})),
-  ...Array.from({length: 8}, (_, i) => ({t: 0.3 + i * 0.35, src: SFX('coin-collect'), vol: 0.22})),
-  {t: 2.83, src: SFX('success-chime'), vol: 0.45},
-  {t: 4.35, src: SFX('notification-pop'), vol: 0.35},
-  {t: 5.64, src: SFX('notification-pop'), vol: 0.35},
-  ...Array.from({length: 8}, (_, i) => ({t: 7.2 + i * 0.18, src: SFX('select-002'), vol: 0.2})),
-  {t: 10.64, src: SFX('switch-002'), vol: 0.45},
-  {t: 13.1, src: SFX('handle-coins'), vol: 0.4},
-  {t: 15.6, src: SFX('select-002'), vol: 0.4},
-  ...Array.from({length: 6}, (_, i) => ({t: 16.6 + i * 0.35, src: SFX('tick-001'), vol: 0.35})),
-  {t: 18.1, src: SFX('notification-pop'), vol: 0.35},
-  ...Array.from({length: 10}, (_, i) => ({t: 21.0 + i * 0.12, src: SFX('notification-pop'), vol: 0.12})),
-  {t: 22.08, src: SFX('select-002'), vol: 0.4},
-  {t: 22.49, src: SFX('select-002'), vol: 0.4},
-  {t: 30.2, src: SFX('success-chime'), vol: 0.45},
-  {t: 33.35, src: SFX('notification-pop'), vol: 0.35},
-  {t: 36.1, src: SFX('handle-coins'), vol: 0.4},
-  {t: 40.8, src: SFX('error-002'), vol: 0.4},
-  {t: 44.62, src: SFX('error-002'), vol: 0.4},
-  {t: 45.9, src: SFX('impact-generic-light-002'), vol: 0.5},
+  ...CUTS.map((t) => ({t: t - 0.3, src: SFX('whoosh'), vol: 0.22})),
+  {t: 0.35, src: SFX('coins'), vol: 0.3},
+  {t: 1.9, src: SFX('riser'), vol: 0.25},
+  {t: 2.83, src: SFX('chime'), vol: 0.32},
+  {t: 10.64, src: SFX('pop'), vol: 0.35},
+  {t: 18.1, src: SFX('tick'), vol: 0.3},
+  {t: 22.08, src: SFX('pop'), vol: 0.3},
+  {t: 30.2, src: SFX('thud'), vol: 0.45},
+  {t: 36.1, src: SFX('coins'), vol: 0.25},
+  {t: 40.8, src: SFX('thud'), vol: 0.4},
+  {t: 45.9, src: SFX('thud'), vol: 0.55},
 ];
 
 const World: React.FC = () => (
