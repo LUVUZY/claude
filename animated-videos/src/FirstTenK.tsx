@@ -7,10 +7,10 @@ import {Backdrop, C, Camera, Caption, Cross, Dust, FONT, GLOW, Ground, Icon, Paw
 // purchase likelihood for a product with five reviews is 270% greater than for a product with no reviews.
 export const FIRST_10K_FRAMES = fr(58);
 
-const money = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
+export const money = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
 
 /** A slow flat stretch then a steep bend. prog 0..1; first 55% of the path is the struggle. */
-const curve = (ox: number, oy: number, w: number, h: number) => {
+export const curve = (ox: number, oy: number, w: number, h: number) => {
   const pts: [number, number][] = [];
   for (let i = 0; i <= 140; i++) {
     const u = i / 140;
@@ -20,7 +20,7 @@ const curve = (ox: number, oy: number, w: number, h: number) => {
   }
   return pts;
 };
-const Chart: React.FC<{ox: number; oy: number; w: number; h: number; prog: number; rider?: boolean; dimFlat?: boolean}> = ({ox, oy, w, h, prog, rider = true}) => {
+export const Chart: React.FC<{ox: number; oy: number; w: number; h: number; prog: number; rider?: boolean; dimFlat?: boolean}> = ({ox, oy, w, h, prog, rider = true}) => {
   const pts = curve(ox, oy, w, h);
   const n = Math.max(1, Math.round(prog * 140));
   const shown = pts.slice(0, n + 1);
@@ -34,14 +34,14 @@ const Chart: React.FC<{ox: number; oy: number; w: number; h: number; prog: numbe
     </>
   );
 };
-const Tick: React.FC<{x: number; y0: number; y1: number; label: string; s: number; at: number; dim?: boolean}> = ({x, y0, y1, label, s, at, dim}) => (
+export const Tick: React.FC<{x: number; y0: number; y1: number; label: string; s: number; at: number; dim?: boolean}> = ({x, y0, y1, label, s, at, dim}) => (
   <>
     <div style={{position: 'absolute', left: x - 1, top: y1, width: 2, height: (y0 - y1) * fade(s, at, 0.5), backgroundImage: `linear-gradient(180deg, ${dim ? '#444' : '#9A9A9A'} 60%, transparent 60%)`, backgroundSize: '2px 14px'}} />
     <Caption x={x} y={y0 + 18} text={label} s={s} at={at} dim={dim} size={22} />
   </>
 );
 
-const ReviewCard: React.FC<{x: number; y: number; stars: number; title: string; s: number; at: number; starAt: number; dim?: boolean}> = ({x, y, stars, title, s, at, starAt, dim}) => {
+export const ReviewCard: React.FC<{x: number; y: number; stars: number; title: string; s: number; at: number; starAt: number; dim?: boolean}> = ({x, y, stars, title, s, at, starAt, dim}) => {
   const p = pop(s, at);
   return (
     <div style={{position: 'absolute', left: x - 190, top: y - 220, width: 380, height: 440, borderRadius: 22, border: `4.5px solid ${dim ? '#3E3E3E' : C.line}`, background: '#050505', opacity: Math.min(1, p * 1.4), scale: `${0.9 + 0.1 * p}`, filter: dim ? undefined : GLOW}}>
@@ -63,7 +63,7 @@ const ReviewCard: React.FC<{x: number; y: number; stars: number; title: string; 
   );
 };
 
-const Seesaw: React.FC<{x: number; y: number; s: number; at: number; tilt: number}> = ({x, y, s, at, tilt}) => (
+export const Seesaw: React.FC<{x: number; y: number; s: number; at: number; tilt: number}> = ({x, y, s, at, tilt}) => (
   <div style={{position: 'absolute', left: x, top: y, opacity: fade(s, at)}}>
     <svg width={1} height={1} style={{position: 'absolute', overflow: 'visible', filter: GLOW}}>
       <path d="M -60 120 L 0 0 L 60 120 Z" fill="none" stroke={C.line} strokeWidth={4.5} strokeLinejoin="round" />
@@ -228,7 +228,7 @@ const CAM = [
 type Cue = {t: number; src: string; vol?: number};
 const SFX = (n: string) => `sfx-soft/${n}.wav`;
 const MOVES = [2.9, 4.4, 6.9, 9.2, 11.1, 16.8, 22.2, 24.0, 28.1, 30.5, 38.1, 44.6, 50.0];
-const CUES: Cue[] = [
+export const CUES: Cue[] = [
   ...MOVES.map((t) => ({t: t - 0.55, src: SFX('whoosh'), vol: 0.2})),
   {t: 2.4, src: SFX('riser'), vol: 0.26},
   {t: 3.7, src: SFX('chime'), vol: 0.3},
@@ -240,7 +240,7 @@ const CUES: Cue[] = [
   {t: 53.1, src: SFX('thud'), vol: 0.55},
 ];
 
-export const FirstTenK: React.FC<{music?: 'song' | 'none'}> = ({music = 'song'}) => {
+export const FirstTenK: React.FC<{music?: 'song' | 'none'; vertical?: boolean; grid?: 'subtle' | 'world' | 'none'}> = ({music = 'song', vertical = false, grid = 'subtle'}) => {
   const s = useSec();
   const end = fadeOut(s, 57.1, 0.9);
   return (
@@ -253,8 +253,8 @@ export const FirstTenK: React.FC<{music?: 'song' | 'none'}> = ({music = 'song'})
         </Sequence>
       ))}
       <AbsoluteFill style={{opacity: end}}>
-        <Backdrop />
-        <Camera keys={CAM}>
+        <Backdrop dots={grid === 'subtle'} />
+        <Camera keys={CAM} fit={vertical ? 0.7 : 1} cy={vertical ? 0.42 : 0.5} grid={grid === 'world'}>
           <World />
         </Camera>
       </AbsoluteFill>

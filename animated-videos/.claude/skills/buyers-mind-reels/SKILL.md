@@ -68,6 +68,13 @@ video from the kit; add to the kit instead of drawing one-offs.
 - Closing line flips the hook: "Fear does not make you poor. Reacting to it does." · "School made you an employee.
   What you do next decides if you stay one." · "When everyone climbs the same ladder, the ladder stops being the advantage."
 
+**Vertical (TikTok / Reels, 1080×1920):** don't shrink the wide layout. Build a vertical World: scenes stacked top to
+bottom (camera glides down), content within x ±470 and y −800…+600 of the camera centre, `Camera cy={0.42}` so nothing
+important sits in the bottom 25% (app captions/buttons) or the bottom-right. Bigger type than wide: pills 30–38 px,
+stats 120–150 px, final line ~118 px on two lines. Example: `src/FirstTenKVertical.tsx`.
+**Background grid:** `Camera grid` draws a cryothum-style dot grid in world space (moves with the camera);
+`Backdrop dots` is the faint screen-fixed one. Offer the owner both when comparing.
+
 **Music for V2:** the owner's second clip (an instrumental, ~62 BPM, beat ≈ 0.97 s; the clip was filmed IRL and is
 only used for its audio; its name doesn't matter). Saved outside git at `scratchpad/song/song2.wav`. Loud for the
 first ~45 s with short dips around 16 s, 30 s and 39 s, then quiet. Bed: the clip from 0 s, faded out at the end and
