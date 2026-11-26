@@ -10,8 +10,8 @@ this exact format. Follow it literally. Deviating from it is what made earlier a
 
 ## 0. Which style (read first)
 
-There are **two saved styles. Keep both; neither replaces the other.** The owner asks for one or the other by name
-(or for "both", which means one new video in each).
+There are **two saved styles. Keep both; neither replaces the other.** Since Nov 2026 the owner is **betting on V2**:
+make new videos in V2 unless V1 is asked for by name ("both" = one new video in each). V1 stays saved and working.
 - **V1 — cryothum figure style** (sections 2–4): grey figures with arms, props, bloom haze, scene cuts with zoom/blur.
   Examples: `src/EveryMillionaire.tsx`, `src/WhoTheyBecome.tsx`.
 - **V2 — premium thin-line style** (this section): pure black, thin glowing line art, pills, one gliding camera.
