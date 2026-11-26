@@ -11,8 +11,8 @@ export const NEXT_TO_FRAMES = fr(62.5);
 const BEAT = grid.beat;
 const DROP = grid.drop; // 6.623
 const STRIP = grid.strip; // 53.751
-const FLOOR = 965;
-const G = '#D6D6D6';
+export const FLOOR = 965;
+export const G = '#D6D6D6';
 
 const beatPulse = (sec: number) => {
   if (sec < DROP || sec > STRIP) return 0;
@@ -22,19 +22,19 @@ const beatPulse = (sec: number) => {
 };
 
 // ---------- kit ----------
-const Floor: React.FC = () => (
+export const Floor: React.FC = () => (
   <div style={{position: 'absolute', left: -3000, right: -3000, top: FLOOR, height: 3, backgroundImage: 'linear-gradient(90deg, rgba(215,215,215,0.45) 55%, transparent 55%)', backgroundSize: '26px 3px'}} />
 );
-const Glow: React.FC<{x: number; y: number; r?: number; a?: number}> = ({x, y, r = 450, a = 0.12}) => (
+export const Glow: React.FC<{x: number; y: number; r?: number; a?: number}> = ({x, y, r = 450, a = 0.12}) => (
   <div style={{position: 'absolute', left: x - r, top: y - r, width: r * 2, height: r * 2, borderRadius: r, background: `radial-gradient(circle, rgba(255,255,255,${a}) 0%, rgba(255,255,255,${a * 0.3}) 40%, transparent 70%)`}} />
 );
-const Spot: React.FC<{x: number; w?: number; a?: number}> = ({x, w = 560, a = 1}) => (
+export const Spot: React.FC<{x: number; w?: number; a?: number}> = ({x, w = 560, a = 1}) => (
   <>
     <div style={{position: 'absolute', left: x - w / 2, top: -40, width: w, height: FLOOR + 60, background: `linear-gradient(180deg, rgba(255,255,255,${0.02 * a}) 0%, rgba(255,255,255,${0.13 * a}) 100%)`, clipPath: 'polygon(40% 0, 60% 0, 100% 100%, 0 100%)', filter: 'blur(18px)'}} />
     <div style={{position: 'absolute', left: x - w * 0.6, top: FLOOR - 70, width: w * 1.2, height: 140, borderRadius: '50%', background: `radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,255,255,${0.2 * a}) 0%, transparent 70%)`}} />
   </>
 );
-const Counter: React.FC<{x: number; y: number; label: string; value: string; size?: number; at?: number; dim?: boolean}> = ({x, y, label, value, size = 100, at = -9, dim}) => {
+export const Counter: React.FC<{x: number; y: number; label: string; value: string; size?: number; at?: number; dim?: boolean}> = ({x, y, label, value, size = 100, at = -9, dim}) => {
   const s = useSec();
   if (s < at) return null;
   const p = pop(s, at, 14);
@@ -45,7 +45,7 @@ const Counter: React.FC<{x: number; y: number; label: string; value: string; siz
     </div>
   );
 };
-const Tag: React.FC<{x: number; y: number; text: string; scale?: number; dim?: number; str?: number; swing?: number; bright?: number}> = ({x, y, text, scale = 1, dim = 0, str = 110, swing = 0, bright = 0}) => {
+export const Tag: React.FC<{x: number; y: number; text: string; scale?: number; dim?: number; str?: number; swing?: number; bright?: number}> = ({x, y, text, scale = 1, dim = 0, str = 110, swing = 0, bright = 0}) => {
   const s = useSec();
   const c = dim > 0.5 ? '#6A6A6A' : G;
   return (
@@ -60,7 +60,7 @@ const Tag: React.FC<{x: number; y: number; text: string; scale?: number; dim?: n
     </div>
   );
 };
-const Monitor: React.FC<{x: number; y: number; w?: number; on?: number; children?: React.ReactNode}> = ({x, y, w = 420, on = 1, children}) => {
+export const Monitor: React.FC<{x: number; y: number; w?: number; on?: number; children?: React.ReactNode}> = ({x, y, w = 420, on = 1, children}) => {
   const h = w * 0.62;
   return (
     <div style={{position: 'absolute', left: x - w / 2, top: y - h - 30, width: w, height: h, borderRadius: 14, border: `5px solid ${G}`, background: 'rgba(14,14,14,0.95)', boxShadow: `0 0 ${50 * on}px rgba(255,255,255,${0.16 * on}), inset 0 0 30px rgba(255,255,255,0.05)`, overflow: 'visible'}}>
@@ -81,20 +81,20 @@ const Monitor: React.FC<{x: number; y: number; w?: number; on?: number; children
     </div>
   );
 };
-const Desk: React.FC<{x: number; w?: number; y?: number}> = ({x, w = 560, y = 790}) => (
+export const Desk: React.FC<{x: number; w?: number; y?: number}> = ({x, w = 560, y = 790}) => (
   <>
     <div style={{position: 'absolute', left: x - w / 2, top: y, width: w, height: 14, border: `5px solid ${G}`, borderRadius: 3}} />
     <div style={{position: 'absolute', left: x - w / 2 + 20, top: y + 14, width: 5, height: FLOOR - y - 14, background: G}} />
     <div style={{position: 'absolute', left: x + w / 2 - 25, top: y + 14, width: 5, height: FLOOR - y - 14, background: G}} />
   </>
 );
-const Bill: React.FC<{x: number; y: number; rot?: number; op?: number; s?: number}> = ({x, y, rot = 0, op = 1, s = 1}) => (
+export const Bill: React.FC<{x: number; y: number; rot?: number; op?: number; s?: number}> = ({x, y, rot = 0, op = 1, s = 1}) => (
   <div style={{position: 'absolute', left: x - 46 * s, top: y - 28 * s, width: 92 * s, height: 56 * s, borderRadius: 5, background: '#DEDEDE', border: '3px solid #8A8A8A', rotate: `${rot}deg`, opacity: op, display: 'flex', alignItems: 'center', justifyContent: 'space-around', fontFamily: FONT, fontWeight: 900, fontSize: 24 * s, color: '#575757', boxShadow: '0 0 14px rgba(255,255,255,0.2)'}}>
     <span>$</span>
     <span>$</span>
   </div>
 );
-const Cup: React.FC<{x: number; y: number; s?: number; steam?: boolean}> = ({x, y, s = 1, steam}) => {
+export const Cup: React.FC<{x: number; y: number; s?: number; steam?: boolean}> = ({x, y, s = 1, steam}) => {
   const t = useSec();
   return (
     <div style={{position: 'absolute', left: x - 30 * s, top: y - 70 * s, width: 60 * s, height: 70 * s}}>
@@ -108,26 +108,26 @@ const Cup: React.FC<{x: number; y: number; s?: number; steam?: boolean}> = ({x, 
     </div>
   );
 };
-const Card: React.FC<{x: number; y: number; w?: number; label?: string; op?: number; sc?: number}> = ({x, y, w = 150, label, op = 1, sc = 1}) => (
+export const Card: React.FC<{x: number; y: number; w?: number; label?: string; op?: number; sc?: number}> = ({x, y, w = 150, label, op = 1, sc = 1}) => (
   <div style={{position: 'absolute', left: x - w / 2, top: y - w * 0.32, width: w, height: w * 0.64, borderRadius: 10, border: `4px solid ${G}`, background: 'rgba(30,30,30,0.95)', opacity: op, scale: `${sc}`, boxShadow: '0 0 18px rgba(255,255,255,0.12)'}}>
     <div style={{position: 'absolute', left: '50%', top: '50%', width: w * 0.22, height: w * 0.22, translate: '-50% -50%', borderRadius: '50%', border: `3px solid ${G}`}} />
     <div style={{position: 'absolute', left: '50%', top: '50%', translate: '-35% -50%', width: 0, height: 0, borderTop: `${w * 0.05}px solid transparent`, borderBottom: `${w * 0.05}px solid transparent`, borderLeft: `${w * 0.075}px solid ${G}`}} />
     {label && <div style={{position: 'absolute', right: 6, top: 6, padding: '2px 8px', borderRadius: 6, background: '#E6E6E6', color: '#151515', fontFamily: FONT, fontWeight: 900, fontSize: w * 0.13}}>{label}</div>}
   </div>
 );
-const Phone: React.FC<{x: number; y: number; h?: number; rot?: number; children?: React.ReactNode}> = ({x, y, h = 300, rot = 0, children}) => (
+export const Phone: React.FC<{x: number; y: number; h?: number; rot?: number; children?: React.ReactNode}> = ({x, y, h = 300, rot = 0, children}) => (
   <div style={{position: 'absolute', left: x - h * 0.25, top: y - h / 2, width: h * 0.5, height: h, borderRadius: h * 0.07, border: `5px solid ${G}`, background: 'rgba(16,16,16,0.97)', rotate: `${rot}deg`, boxShadow: '0 0 40px rgba(255,255,255,0.22)', overflow: 'hidden'}}>
     {children}
   </div>
 );
-const Flame: React.FC<{x: number; y: number; s?: number; i: number}> = ({x, y, s = 1, i}) => {
+export const Flame: React.FC<{x: number; y: number; s?: number; i: number}> = ({x, y, s = 1, i}) => {
   const t = useSec();
   const f = 1 + 0.18 * Math.sin(t * 13 + i * 2) + 0.1 * Math.sin(t * 21 + i);
   return (
     <div style={{position: 'absolute', left: x - 40 * s, top: y - 120 * s * f, width: 80 * s, height: 120 * s * f, borderRadius: '50% 50% 45% 45% / 65% 65% 35% 35%', background: 'radial-gradient(ellipse at 50% 80%, rgba(255,255,255,0.95), rgba(230,230,230,0.55) 55%, rgba(200,200,200,0) 75%)', filter: 'blur(1.5px)', rotate: `${Math.sin(t * 7 + i) * 6}deg`, transformOrigin: '50% 100%'}} />
   );
 };
-const Walker: React.FC<{from: number; to: number; t0: number; t1: number; R?: number; dim?: number; pose?: keyof typeof POSES}> = ({from, to, t0, t1, R = 42, dim = 0}) => {
+export const Walker: React.FC<{from: number; to: number; t0: number; t1: number; R?: number; dim?: number; pose?: keyof typeof POSES}> = ({from, to, t0, t1, R = 42, dim = 0}) => {
   const s = useSec();
   if (s < t0) return null;
   const p = ramp(s, t0, t1, 0, 1, Easing.inOut(Easing.quad));
@@ -135,7 +135,7 @@ const Walker: React.FC<{from: number; to: number; t0: number; t1: number; R?: nu
   const moving = p > 0 && p < 1;
   return <CryoFigure x={x} y={FLOOR - (moving ? Math.abs(Math.sin(s * 9)) * 8 : 0)} R={R} front={POSES.rest.front} back={POSES.rest.back} facing={to < from ? -1 : 1} dim={dim} tilt={moving ? (to < from ? -4 : 4) : 0} />;
 };
-const Label: React.FC<{x: number; y: number; text: string; at?: number; size?: number; dim?: boolean}> = ({x, y, text, at = -9, size = 26, dim}) => {
+export const Label: React.FC<{x: number; y: number; text: string; at?: number; size?: number; dim?: boolean}> = ({x, y, text, at = -9, size = 26, dim}) => {
   const s = useSec();
   if (s < at) return null;
   return <div style={{position: 'absolute', left: x - 300, width: 600, top: y, textAlign: 'center', fontFamily: FONT, fontWeight: 800, fontSize: size, letterSpacing: 5, color: dim ? '#6A6A6A' : '#BDBDBD', opacity: pop(s, at, 14)}}>{text}</div>;
