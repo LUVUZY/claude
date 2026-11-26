@@ -105,6 +105,8 @@ Their closing lines resolve the hook in one breath, e.g. "...money avoids the pe
 people who are too busy to notice it."
 
 Topic rule: money-adjacent and buyer-psychology. Every claim must be true; no invented statistics.
+**Rotate topics.** The owner is tired of pricing/anchoring/decoy angles ("done a million times"). Mix in who-you-become,
+habits, social circles, status, risk, work ethic, money myths. Use the owner's own hook word for word when they give one.
 Facts that are real and safe: the wine price experiment (people rated the same wine better when told it cost more).
 
 ## 2. Visual formula (V1, cryothum figure style)
