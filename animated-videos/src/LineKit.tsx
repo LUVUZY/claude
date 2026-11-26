@@ -121,13 +121,13 @@ export const Pawn: React.FC<{x: number; y: number; h?: number; look?: 'hero' | '
 };
 
 /** Row of pawns; `hi` index is the hero, the rest dim. Each fades in with a stagger. */
-export const Crowd: React.FC<{x: number; y: number; n: number; gap: number; h?: number; hi?: number; s: number; at: number; stagger?: number; cap?: boolean; ghost?: boolean; walk?: number}> = ({x, y, n, gap, h = 110, hi = -1, s, at, stagger = 0.04, cap, ghost = true, walk = 0}) => (
+export const Crowd: React.FC<{x: number; y: number; n: number; gap: number; h?: number; hi?: number; s: number; at: number; stagger?: number; cap?: boolean; ghost?: boolean; walk?: number; idle?: number}> = ({x, y, n, gap, h = 110, hi = -1, s, at, stagger = 0.04, cap, ghost = true, walk = 0, idle = 0}) => (
   <>
     {Array.from({length: n}, (_, i) => {
       // walk: px to walk in from (negative = from the left). Each pawn arrives with a small hop and stays put.
       const t0 = at + i * (walk ? 0.12 : stagger);
       const p = walk ? interpolate(s, [t0, t0 + 0.9], [0, 1], {...clamp, easing: out}) : 1;
-      const hop = walk && p > 0 && p < 1 ? Math.abs(Math.sin(p * Math.PI * 4)) * h * 0.06 : 0;
+      const hop = (walk && p > 0 && p < 1 ? Math.abs(Math.sin(p * Math.PI * 4)) * h * 0.06 : 0) + (idle ? Math.abs(Math.sin(s * 2.6 + i * 1.7)) * idle : 0);
       return <Pawn key={i} x={x + i * gap + (1 - p) * walk} y={y} h={h} cap={cap} bob={hop} look={i === hi ? 'hero' : ghost ? 'ghost' : 'line'} op={fade(s, t0, 0.3)} />;
     })}
   </>
