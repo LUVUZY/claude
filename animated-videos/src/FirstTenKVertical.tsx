@@ -36,8 +36,8 @@ const World: React.FC = () => {
       <Chart ox={-450} oy={400} w={W} h={950} prog={hp} t={s} />
       <Tick x={-450 + 0.55 * W} y0={400} y1={-560} label="$10K" s={s} at={0.5} />
       <Pill x={-230} y={280} text="THE FIRST $10K" size={30} look={s > 2.6 ? 'ghost' : 'outline'} s={s} at={0.5} />
-      <Pill x={170} y={-620} text="THE NEXT $100K" size={36} look="solid" s={s} at={2.7} />
-      <Stat x={240} y={-230} value={money(hookMoney)} caption="EARNED" size={130} s={s} at={0} align="right" />
+      <Pill x={-200} y={-560} text="THE NEXT $100K" size={36} look="solid" s={s} at={2.7} />
+      <Stat x={30} y={-230} value={money(hookMoney)} caption="EARNED" size={108} s={s} at={0} align="right" />
 
       {/* B — most people quit (0,2400) */}
       <Seesaw x={0} y={1980} s={s} at={6.6} tilt={interpolate(s, [6.9, 7.5], [0, 14], clamp)} />
