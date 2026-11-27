@@ -17,6 +17,7 @@ import {Decoy, DECOY_FRAMES} from './Decoy';
 import {TwoMillionaires, TWO_MIL_FRAMES} from './TwoMillionaires';
 import {FirstTenK, FIRST_10K_FRAMES} from './FirstTenK';
 import {FirstTenKVertical, FIRST_10K_V_FRAMES} from './FirstTenKVertical';
+import {CandyKid, CANDY_FRAMES} from './CandyKid';
 import {WhoTheyBecome, WTB_FRAMES} from './WhoTheyBecome';
 
 export const RemotionRoot: React.FC = () => (
@@ -42,6 +43,8 @@ export const RemotionRoot: React.FC = () => (
     <Composition id="ThirdBuyerMusicReady" component={ThirdBuyer} defaultProps={{music: 'none' as const}} durationInFrames={THIRD_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="WhoTheyBecome" component={WhoTheyBecome} durationInFrames={WTB_FRAMES} fps={30} width={1920} height={1080} />
     <Composition id="WhoTheyBecomeMusicReady" component={WhoTheyBecome} defaultProps={{music: 'none' as const}} durationInFrames={WTB_FRAMES} fps={30} width={1920} height={1080} />
+    <Composition id="CandyKid" component={CandyKid} durationInFrames={CANDY_FRAMES} fps={30} width={1080} height={1920} />
+    <Composition id="CandyKidMusicReady" component={CandyKid} defaultProps={{music: 'none' as const}} durationInFrames={CANDY_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="FirstTenKVerticalGrid" component={FirstTenKVertical} defaultProps={{grid: true}} durationInFrames={FIRST_10K_V_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="FirstTenKVerticalPlain" component={FirstTenKVertical} defaultProps={{grid: false}} durationInFrames={FIRST_10K_V_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="FirstTenK" component={FirstTenK} durationInFrames={FIRST_10K_FRAMES} fps={30} width={1920} height={1080} />
