@@ -20,7 +20,7 @@ export const curve = (ox: number, oy: number, w: number, h: number) => {
   }
   return pts;
 };
-export const Chart: React.FC<{ox: number; oy: number; w: number; h: number; prog: number; rider?: boolean; dimFlat?: boolean}> = ({ox, oy, w, h, prog, rider = true}) => {
+export const Chart: React.FC<{ox: number; oy: number; w: number; h: number; prog: number; rider?: boolean; dimFlat?: boolean; t?: number}> = ({ox, oy, w, h, prog, rider = true, t = 0}) => {
   const pts = curve(ox, oy, w, h);
   const n = Math.max(1, Math.round(prog * 140));
   const shown = pts.slice(0, n + 1);
@@ -30,7 +30,7 @@ export const Chart: React.FC<{ox: number; oy: number; w: number; h: number; prog
       <svg width={1} height={1} style={{position: 'absolute', left: 0, top: 0, overflow: 'visible', filter: GLOW}}>
         <polyline points={shown.map((p) => p.join(',')).join(' ')} fill="none" stroke={C.line} strokeWidth={4} strokeLinejoin="round" strokeLinecap="round" />
       </svg>
-      {rider && prog > 0.005 && <Pawn x={tip[0]} y={tip[1] - 4} h={90} look="hero" />}
+      {rider && prog > 0 && <Pawn x={tip[0]} y={tip[1] - 4} h={90} look="hero" op={Math.min(1, prog / 0.03)} bob={prog >= 1 ? Math.abs(Math.sin(t * 6)) * 10 : 0} />}
     </>
   );
 };
@@ -77,10 +77,19 @@ export const Seesaw: React.FC<{x: number; y: number; s: number; at: number; tilt
   </div>
 );
 
+const hookProg = (t: number) => {
+  // crawl at a steady speed to the $10K mark, then accelerate smoothly (same speed at the join, so no stall)
+  if (t <= 0.2) return 0;
+  if (t <= 2.4) return ((t - 0.2) / 2.2) * 0.55;
+  const u = Math.min(t, 3.7) - 2.4;
+  const v0 = 0.55 / 2.2;
+  return Math.min(1, 0.55 + v0 * u + ((0.45 - v0 * 1.3) / 1.3 ** 3) * u ** 3);
+};
+
 const World: React.FC = () => {
   const s = useSec();
   // hook chart: crawl through the first 10k, then rocket
-  const hp = s < 2.4 ? interpolate(s, [0.2, 2.4], [0, 0.55], clamp) : interpolate(s, [2.4, 3.7], [0.55, 1], {...clamp, easing: (t: number) => t * t});
+  const hp = hookProg(s);
   const hookMoney = hp < 0.55 ? (hp / 0.55) * 10000 : 10000 + 90000 * ((hp - 0.55) / 0.45);
   // later chart: the bend
   const fp = interpolate(s, [38.2, 43.9], [0.3, 1], clamp);
@@ -92,11 +101,11 @@ const World: React.FC = () => {
 
       {/* A — hook (0,0) */}
       <Ground y={320} x0={-1100} x1={1100} s={s} at={0} />
-      <Chart ox={-820} oy={320} w={1500} h={720} prog={hp} />
+      <Chart ox={-820} oy={320} w={1500} h={720} prog={hp} t={s} />
       <Tick x={-820 + 0.55 * 1500} y0={320} y1={-460} label="$10K" s={s} at={0.5} />
       <Pill x={-460} y={170} text="THE FIRST $10K" size={24} look={s > 2.6 ? 'ghost' : 'outline'} s={s} at={0.5} />
       <Pill x={420} y={-460} text="THE NEXT $100K" size={28} look="solid" s={s} at={2.7} />
-      <Stat x={-380} y={-300} value={money(hookMoney)} caption="EARNED" size={110} s={s} at={0} />
+      <Stat x={-110} y={-300} value={money(hookMoney)} caption="EARNED" size={110} s={s} at={0} align="right" />
 
       {/* B — most people quit (2400,0) */}
       <Ground y={320} x0={1300} x1={3600} s={s} at={3.9} />
@@ -165,9 +174,9 @@ const World: React.FC = () => {
 
       {/* F — the line bends (7400,3100) */}
       <Ground y={3420} x0={6400} x1={8400} s={s} at={37.8} />
-      <Chart ox={6600} oy={3420} w={1600} h={760} prog={fp} />
+      <Chart ox={6600} oy={3420} w={1600} h={760} prog={fp} t={s} />
       <Tick x={6600 + 0.55 * 1600} y0={3420} y1={2560} label="$10K" s={s} at={38.2} />
-      <Stat x={6950} y={2700} value={money(fMoney)} caption="EARNED" size={90} s={s} at={38.0} />
+      <Stat x={7180} y={2700} value={money(fMoney)} caption="EARNED" size={90} s={s} at={38.0} align="right" />
       <Pill x={7800} y={2550} text="EACH SALE EASIER" size={28} look="solid" s={s} at={39.3} />
       {/* G — people who stop at 9,000 */}
       <Pawn x={6600 + 0.5 * 1600} y={3400} h={120} look="ghost" op={fade(s, 46.4)} />
@@ -196,7 +205,7 @@ const CAM = [
   {t: 0, x: -400, y: 60, z: 1.2}, // the slow flat stretch
   {t: 2.2, x: -380, y: 60, z: 1.24},
   {t: 2.9, x: 0, y: -60, z: 0.92}, // pull back: the rocket
-  {t: 3.7, x: 0, y: -60, z: 0.94},
+  {t: 4.1, x: 30, y: -90, z: 0.98},
   {t: 4.4, x: 2300, y: 160, z: 0.95}, // crowd walking, quitting
   {t: 6.2, x: 2300, y: 160, z: 0.98},
   {t: 6.9, x: 2400, y: -480, z: 1.05}, // seesaw

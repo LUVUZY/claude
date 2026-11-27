@@ -58,7 +58,7 @@ export const camAt = (keys: CamKey[], s: number) => {
   // short slide): spread over the whole interval, so the camera is never frozen between ideas.
   const far = Math.hypot(b.x - a.x, b.y - a.y) > 220 || Math.abs((b.z ?? 1) - (a.z ?? 1)) > 0.12;
   const MOVE = Math.min(0.8, Math.max(0.35, (b.t - a.t) * 0.4));
-  const p = a === b ? 0 : far ? interpolate(s, [b.t - MOVE, b.t], [0, 1], {...clamp, easing: io}) : interpolate(s, [a.t, b.t], [0, 1], {...clamp, easing: Easing.inOut(Easing.sin)});
+  const p = a === b ? 0 : far ? interpolate(s, [Math.max(a.t, b.t - MOVE), b.t], [0, 1], {...clamp, easing: io}) : interpolate(s, [a.t, b.t], [0, 1], {...clamp, easing: Easing.inOut(Easing.sin)});
   const lerp = (u: number, v: number) => u + (v - u) * p;
   return {x: lerp(a.x, b.x), y: lerp(a.y, b.y), z: lerp(a.z ?? 1, b.z ?? 1)};
 };
@@ -71,10 +71,11 @@ export const Camera: React.FC<{keys: CamKey[]; drift?: number; fit?: number; cy?
   const c = camAt(keys, s);
   const c2 = camAt(keys, s + 1 / FPS);
   const speed = Math.hypot(c2.x - c.x, c2.y - c.y) + Math.abs(c2.z - c.z) * 900;
-  const blur = Math.min(6, speed * 0.12);
+  // motion blur eases in with speed (no on/off threshold, which made the frame snap soft/sharp)
+  const blur = Math.min(6, Math.max(0, speed - 4) * 0.12);
   const z = c.z * fit * (1 + drift * Math.sin(s * 0.5)); // never fully still
   return (
-    <AbsoluteFill style={{filter: blur > 0.3 ? `blur(${blur}px)` : undefined}}>
+    <AbsoluteFill style={{filter: blur > 0.01 ? `blur(${blur.toFixed(2)}px)` : undefined}}>
       <div style={{position: 'absolute', left: width / 2, top: height * cy, width: 0, height: 0, transform: `scale(${z}) translate(${-c.x}px, ${-c.y}px)`}}>
         {grid && <div style={{position: 'absolute', left: -5000, top: -5000, width: 18000, height: 26000, backgroundImage: 'radial-gradient(rgba(255,255,255,0.17) 2.4px, transparent 2.9px)', backgroundSize: '46px 46px'}} />}
         {children}
@@ -166,8 +167,9 @@ export const Bubble: React.FC<{x: number; y: number; text: string; size?: number
 };
 
 /** Big number + small letter-spaced caption under it. Pass `value` already formatted. */
-export const Stat: React.FC<{x: number; y: number; value: string; caption?: string; size?: number; s: number; at: number; dim?: boolean}> = ({x, y, value, caption, size = 150, s, at, dim}) => (
-  <div style={{position: 'absolute', left: x, top: y, textAlign: 'center', whiteSpace: 'nowrap', ...enter(s, at, ['-50%', '-50%']), opacity: (dim ? 0.35 : 1) * fade(s, at, 0.4)}}>
+/** align 'right': x is the right edge (use for counters: digits stay put and new ones appear on the left, like an odometer). */
+export const Stat: React.FC<{x: number; y: number; value: string; caption?: string; size?: number; s: number; at: number; dim?: boolean; align?: 'center' | 'left' | 'right'}> = ({x, y, value, caption, size = 150, s, at, dim, align = 'center'}) => (
+  <div style={{position: 'absolute', left: x, top: y, textAlign: align, whiteSpace: 'nowrap', ...enter(s, at, [align === 'left' ? '0px' : align === 'right' ? '-100%' : '-50%', '-50%']), opacity: (dim ? 0.35 : 1) * fade(s, at, 0.4)}}>
     <div style={{fontFamily: FONT, fontWeight: 800, fontSize: size, lineHeight: 1, color: '#F6F6F6', letterSpacing: '-0.01em', filter: 'drop-shadow(0 0 22px rgba(255,255,255,0.4))', fontVariantNumeric: 'tabular-nums'}}>{value}</div>
     {caption && <div style={{marginTop: size * 0.2, fontFamily: FONT, fontWeight: 700, fontSize: Math.max(16, size * 0.16), letterSpacing: '0.32em', color: C.sub}}>{caption}</div>}
   </div>

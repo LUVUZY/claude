@@ -11,9 +11,18 @@ export const FIRST_10K_V_FRAMES = FIRST_10K_FRAMES;
 
 const W = 900; // chart width
 
+const hookProg = (t: number) => {
+  // crawl at a steady speed to the $10K mark, then accelerate smoothly (same speed at the join, so no stall)
+  if (t <= 0.2) return 0;
+  if (t <= 2.4) return ((t - 0.2) / 2.2) * 0.55;
+  const u = Math.min(t, 3.7) - 2.4;
+  const v0 = 0.55 / 2.2;
+  return Math.min(1, 0.55 + v0 * u + ((0.45 - v0 * 1.3) / 1.3 ** 3) * u ** 3);
+};
+
 const World: React.FC = () => {
   const s = useSec();
-  const hp = s < 2.4 ? interpolate(s, [0.2, 2.4], [0, 0.55], clamp) : interpolate(s, [2.4, 3.7], [0.55, 1], {...clamp, easing: (t: number) => t * t});
+  const hp = hookProg(s);
   const hookMoney = hp < 0.55 ? (hp / 0.55) * 10000 : 10000 + 90000 * ((hp - 0.55) / 0.45);
   const fp = interpolate(s, [38.2, 43.9], [0.3, 1], clamp);
   const fMoney = fp < 0.55 ? (fp / 0.55) * 10000 : 10000 + 90000 * ((fp - 0.55) / 0.45);
@@ -24,11 +33,11 @@ const World: React.FC = () => {
 
       {/* A — hook (0,0): the slow flat stretch, then the rocket. Vertical suits the climb. */}
       <Ground y={400} x0={-600} x1={600} s={s} at={0} />
-      <Chart ox={-450} oy={400} w={W} h={950} prog={hp} />
+      <Chart ox={-450} oy={400} w={W} h={950} prog={hp} t={s} />
       <Tick x={-450 + 0.55 * W} y0={400} y1={-560} label="$10K" s={s} at={0.5} />
       <Pill x={-230} y={280} text="THE FIRST $10K" size={30} look={s > 2.6 ? 'ghost' : 'outline'} s={s} at={0.5} />
       <Pill x={170} y={-620} text="THE NEXT $100K" size={36} look="solid" s={s} at={2.7} />
-      <Stat x={-60} y={-230} value={money(hookMoney)} caption="EARNED" size={130} s={s} at={0} />
+      <Stat x={240} y={-230} value={money(hookMoney)} caption="EARNED" size={130} s={s} at={0} align="right" />
 
       {/* B — most people quit (0,2400) */}
       <Seesaw x={0} y={1980} s={s} at={6.6} tilt={interpolate(s, [6.9, 7.5], [0, 14], clamp)} />
@@ -98,9 +107,9 @@ const World: React.FC = () => {
 
       {/* F — the line bends (0,12300) + G people who stop at 9,000 */}
       <Ground y={12650} x0={-600} x1={600} s={s} at={37.8} />
-      <Chart ox={-450} oy={12650} w={W} h={880} prog={fp} />
+      <Chart ox={-450} oy={12650} w={W} h={880} prog={fp} t={s} />
       <Tick x={-450 + 0.55 * W} y0={12650} y1={11780} label="$10K" s={s} at={38.2} />
-      <Stat x={-170} y={11800} value={money(fMoney)} caption="EARNED" size={115} s={s} at={38.0} />
+      <Stat x={100} y={11800} value={money(fMoney)} caption="EARNED" size={115} s={s} at={38.0} align="right" />
       <Pill x={170} y={11640} text="EACH SALE EASIER" size={34} look="solid" s={s} at={39.3} />
       <Pawn x={-450 + 0.5 * W} y={12635} h={140} look="ghost" op={fade(s, 46.4)} />
       <Pill x={-450 + 0.5 * W - 60} y={12330} text="STOPPED AT $9,000" size={30} look="ghost" s={s} at={47.2} />
@@ -131,7 +140,7 @@ const CAM = [
   {t: 0, x: -120, y: 150, z: 1.3}, // the slow flat stretch
   {t: 2.2, x: -110, y: 140, z: 1.33},
   {t: 2.9, x: 0, y: -60, z: 1.0}, // pull back: the rocket
-  {t: 3.7, x: 0, y: -60, z: 1.02},
+  {t: 4.1, x: 20, y: -100, z: 1.06},
   {t: 4.4, x: 0, y: 2650, z: 1.12}, // crowd walking, quitting
   {t: 6.2, x: 0, y: 2650, z: 1.16},
   {t: 6.9, x: 0, y: 2300, z: 0.98}, // seesaw + crowd
