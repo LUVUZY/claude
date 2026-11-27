@@ -35,7 +35,7 @@ const World: React.FC = () => {
       <Ground y={400} x0={-600} x1={600} s={s} at={0} />
       <Chart ox={-450} oy={400} w={W} h={950} prog={hp} t={s} />
       <Tick x={-450 + 0.55 * W} y0={400} y1={-560} label="$10K" s={s} at={0.5} />
-      <Pill x={-230} y={280} text="THE FIRST $10K" size={30} look={s > 2.6 ? 'ghost' : 'outline'} s={s} at={0.5} />
+      <Pill x={-230} y={170} text="THE FIRST $10K" size={30} look={s > 2.6 ? 'ghost' : 'outline'} s={s} at={0.5} />
       <Pill x={-200} y={-560} text="THE NEXT $100K" size={36} look="solid" s={s} at={2.7} />
       <Stat x={30} y={-230} value={money(hookMoney)} caption="EARNED" size={108} s={s} at={0} align="right" />
 
